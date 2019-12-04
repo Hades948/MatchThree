@@ -37,11 +37,6 @@ public class Grid {
     }
 
     public void update() {
-        // TODO Remove this after limiting frame rate.
-        try {
-            Thread.sleep(10);
-        } catch (Exception e) {e.printStackTrace();}
-
         if (Game.getMouseHandler().isDown() && selectedGridPoint == null) {
             selectedGridPoint = getGridPoint(Game.getMouseHandler().getX(), Game.getMouseHandler().getY());
         }
@@ -76,7 +71,7 @@ public class Grid {
         }
 
         // Render the highlighter
-        g.setColor(new Color(255, 255, 255, 100));
+        g.setColor(new Color(255, 255, 255, 50));
         Point gridPoint = getGridPoint(Game.getMouseHandler().getX(), Game.getMouseHandler().getY());
         int highlighterX = (int) gridPoint.getX() * (SQUARE_SIZE + PADDING) + PADDING / 2;
         int highlighterY = (int) gridPoint.getY() * (SQUARE_SIZE + PADDING) + PADDING / 2;

@@ -34,14 +34,15 @@ public class Renderer extends Canvas {
 		paint(offgc);
 		// scale and transfer offscreen to window
         g.drawImage(offscreen, 0, 0, this);
+        // End double buffer code //
+
+        
     }
 
     @Override
     public void paint(Graphics graphics) {
         Graphics2D g = (Graphics2D) graphics;
-        
         grid.render(g);
-
         repaint();
     }
 }

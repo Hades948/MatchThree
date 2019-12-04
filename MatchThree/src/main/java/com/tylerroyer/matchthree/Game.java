@@ -1,9 +1,10 @@
 package com.tylerroyer.matchthree;
 
-import java.util.Random;
-import java.awt.Color;
-
 public class Game {
+    private float lastFrameTime, timeLeftInFrame, currentFPS;
+    private long frameStartTime;
+    private final float TARGET_FPS = 60.0f;
+
     Grid grid;
 
     public Game() {
@@ -13,6 +14,8 @@ public class Game {
         mouseHandler = new MouseHandler();
         renderer = new Renderer(grid);
         window = new Window();
+
+        frameStartTime = System.currentTimeMillis();
     }
 
     private static boolean running;
@@ -40,8 +43,22 @@ public class Game {
 
     public void loop() {
         while(isRunning()) {
+            frameStartTime = System.currentTimeMillis();
+
             update();
             show();
+
+            // FPS Calculation
+            lastFrameTime = System.currentTimeMillis() - frameStartTime;
+            timeLeftInFrame = (1000 / TARGET_FPS) - lastFrameTime;
+            if (timeLeftInFrame >= 0) {
+                // On time.  Sleep remainder of frame.
+                try { Thread.sleep((long) timeLeftInFrame); } catch (InterruptedException e) { e.printStackTrace(); }
+                currentFPS = TARGET_FPS;
+            } else {
+                // Running behind
+                currentFPS = 1000 / lastFrameTime;
+            }
         }
     }
 
@@ -49,6 +66,9 @@ public class Game {
         grid.update();
     }
 
+    // Currently not being used.  It seems like the canvas is drawing in a seperate thread.
+    // This may not be an issue except for CMEs.  If these start to pop up, I'll need to
+    // Change the rendering a bit.  This is staying here for now just in case.
     private void show() {
     }
 }
