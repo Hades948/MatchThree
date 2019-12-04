@@ -10,6 +10,7 @@ public class Grid {
     private int SIZE = 10;
     private int SQUARE_SIZE = 60;
     private int PADDING = 10;
+    private Point selectedGridPoint = null;
 
     private ArrayList<Color> colors;
     private ArrayList<ArrayList<Color>> grid;
@@ -35,6 +36,31 @@ public class Grid {
         }
     }
 
+    public void update() {
+        // TODO Remove this after limiting frame rate.
+        try {
+            Thread.sleep(10);
+        } catch (Exception e) {e.printStackTrace();}
+
+        if (Game.getMouseHandler().isDown() && selectedGridPoint == null) {
+            selectedGridPoint = getGridPoint(Game.getMouseHandler().getX(), Game.getMouseHandler().getY());
+        }
+
+        if (!Game.getMouseHandler().isDown() && selectedGridPoint != null) {
+            Point other = getGridPoint(Game.getMouseHandler().getX(), Game.getMouseHandler().getY());
+            if (other.getX() >= selectedGridPoint.getX() - 1
+             && other.getX() <= selectedGridPoint.getX() + 1
+             && other.getY() >= selectedGridPoint.getY() - 1
+             && other.getY() <= selectedGridPoint.getY() + 1
+             && !other.equals(selectedGridPoint)) {
+                Color temp = grid.get((int) selectedGridPoint.getX()).get((int) selectedGridPoint.getY());
+                grid.get((int) selectedGridPoint.getX()).set((int) selectedGridPoint.getY(), grid.get((int) other.getX()).get((int) other.getY()));
+                grid.get((int) other.getX()).set((int) other.getY(), temp);
+            }
+            selectedGridPoint = null;
+        }
+    }
+
     public void render(Graphics2D g) {
         // Render the grid.
         for (int i = 0; i < grid.size(); i++) {
@@ -49,12 +75,20 @@ public class Grid {
             }
         }
 
-        // Render the selector
+        // Render the highlighter
         g.setColor(new Color(255, 255, 255, 100));
         Point gridPoint = getGridPoint(Game.getMouseHandler().getX(), Game.getMouseHandler().getY());
-        int selectorX = (int) gridPoint.getX() * (SQUARE_SIZE + PADDING) + PADDING / 2;
-        int selectorY = (int) gridPoint.getY() * (SQUARE_SIZE + PADDING) + PADDING / 2;
-        g.fillRect(selectorX, selectorY, SQUARE_SIZE + PADDING, SQUARE_SIZE + PADDING);
+        int highlighterX = (int) gridPoint.getX() * (SQUARE_SIZE + PADDING) + PADDING / 2;
+        int highlighterY = (int) gridPoint.getY() * (SQUARE_SIZE + PADDING) + PADDING / 2;
+        g.fillRect(highlighterX, highlighterY, SQUARE_SIZE + PADDING, SQUARE_SIZE + PADDING);
+
+        // Render the selector
+        if (selectedGridPoint != null) {
+            g.setColor(new Color(255, 255, 255));
+            int selectorX = (int) selectedGridPoint.getX() * (SQUARE_SIZE + PADDING) + PADDING / 2;
+            int selectorY = (int) selectedGridPoint.getY() * (SQUARE_SIZE + PADDING) + PADDING / 2;
+            g.drawRect(selectorX, selectorY, SQUARE_SIZE + PADDING, SQUARE_SIZE + PADDING);
+        }
     }
 
     private Point getGridPoint(int x, int y) {

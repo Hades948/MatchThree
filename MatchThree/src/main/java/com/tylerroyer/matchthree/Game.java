@@ -10,9 +10,9 @@ public class Game {
         running = true;
 
         grid = new Grid();
+        mouseHandler = new MouseHandler();
         renderer = new Renderer(grid);
         window = new Window();
-        mouseHandler = new MouseHandler();
     }
 
     private static boolean running;
@@ -46,7 +46,7 @@ public class Game {
     }
 
     private void update() {
-        
+        grid.update();
     }
 
     private void show() {
