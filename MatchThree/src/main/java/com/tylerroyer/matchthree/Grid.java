@@ -26,21 +26,47 @@ public class Grid {
     }
 
     public void update() {
+        for (ArrayList<Tile> row : grid) {
+            for (Tile tile : row) {
+                tile.update();
+            }
+        }
+
         if (Game.getMouseHandler().isDown() && selectedGridPoint == null) {
             selectedGridPoint = getGridPoint(Game.getMouseHandler().getX(), Game.getMouseHandler().getY());
         }
 
         if (!Game.getMouseHandler().isDown() && selectedGridPoint != null) {
             Point other = getGridPoint(Game.getMouseHandler().getX(), Game.getMouseHandler().getY());
-            if (other.getX() >= selectedGridPoint.getX() - 1
-             && other.getX() <= selectedGridPoint.getX() + 1
-             && other.getY() >= selectedGridPoint.getY() - 1
-             && other.getY() <= selectedGridPoint.getY() + 1
-             && !other.equals(selectedGridPoint)) {
-                Tile temp = grid.get((int) selectedGridPoint.getX()).get((int) selectedGridPoint.getY());
-                grid.get((int) selectedGridPoint.getX()).set((int) selectedGridPoint.getY(), grid.get((int) other.getX()).get((int) other.getY()));
-                grid.get((int) other.getX()).set((int) other.getY(), temp);
+            Tile selectedTile = grid.get((int) selectedGridPoint.getX()).get((int) selectedGridPoint.getY());
+            Tile otherTile = grid.get((int) other.getX()).get((int) other.getY());
+
+            // Set directions.
+            if (other.getX() == selectedGridPoint.getX() - 1 && other.getY() == selectedGridPoint.getY()) {
+                // Other is to the left of selected.
+                selectedTile.setDirection(Tile.Direction.LEFT);
+                otherTile.setDirection(Tile.Direction.RIGHT);
+            } else if (other.getX() == selectedGridPoint.getX() + 1 && other.getY() == selectedGridPoint.getY()) {
+                // Other is to the right of selected.
+                selectedTile.setDirection(Tile.Direction.RIGHT);
+                otherTile.setDirection(Tile.Direction.LEFT);
+            } else if (other.getX() == selectedGridPoint.getX() && other.getY() == selectedGridPoint.getY() - 1) {
+                // Other above selected.
+                selectedTile.setDirection(Tile.Direction.UP);
+                otherTile.setDirection(Tile.Direction.DOWN);
+            } else if (other.getX() == selectedGridPoint.getX() && other.getY() == selectedGridPoint.getY() + 1) {
+                // Other below selected.
+                selectedTile.setDirection(Tile.Direction.DOWN);
+                otherTile.setDirection(Tile.Direction.UP);
             }
+
+            // TODO This is where I need to switch modes.  At this point, I need to hold on to the selected and other tiles
+            // TODO   and then check for grid stability once they're done moving.  If stable, revert.  Otherwise keep and break.
+            // TODO   for now, though, I'll just wait for them to flip and reset to selection mode.
+
+            grid.get((int) selectedGridPoint.getX()).set((int) selectedGridPoint.getY(), grid.get((int) other.getX()).get((int) other.getY()));
+            grid.get((int) other.getX()).set((int) other.getY(), selectedTile);
+
             selectedGridPoint = null;
         }
     }
@@ -51,8 +77,8 @@ public class Grid {
             ArrayList<Tile> row = grid.get(i);
             for (int j = 0; j < row.size(); j++) {
                 g.setColor(row.get(j).getColor());
-                int x = PADDING + i * (SQUARE_SIZE + PADDING);
-                int y = PADDING + j * (SQUARE_SIZE + PADDING);
+                int x = PADDING + i * (SQUARE_SIZE + PADDING) + grid.get(i).get(j).getOffsetX();
+                int y = PADDING + j * (SQUARE_SIZE + PADDING) + grid.get(i).get(j).getOffsetY();
                 int width = SQUARE_SIZE;
                 int height = SQUARE_SIZE;
                 g.fillRect(x, y, width, height);
