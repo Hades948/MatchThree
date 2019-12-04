@@ -12,25 +12,14 @@ public class Grid {
     private int PADDING = 10;
     private Point selectedGridPoint = null;
 
-    private ArrayList<Color> colors;
-    private ArrayList<ArrayList<Color>> grid;
+    private ArrayList<ArrayList<Tile>> grid;
 
     public Grid() {
-        colors = new ArrayList<>();
-        final Color RED = new Color(200, 0, 0);
-        final Color BLUE = new Color(0, 0, 200);
-        final Color GREEN = new Color(0, 180, 0);
-        final Color PURPLE = new Color(100, 0, 100);
-        colors.add(RED);
-        colors.add(BLUE);
-        colors.add(GREEN);
-        colors.add(PURPLE);
-
         grid = new ArrayList<>();
         for (int i = 0; i < SIZE; i++) {
-            ArrayList<Color> row = new ArrayList<>();
+            ArrayList<Tile> row = new ArrayList<>();
             for (int j = 0; j < SIZE; j++) {
-                row.add(colors.get(new Random().nextInt(colors.size())));
+                row.add(new Tile());
             }
             grid.add(row);
         }
@@ -48,7 +37,7 @@ public class Grid {
              && other.getY() >= selectedGridPoint.getY() - 1
              && other.getY() <= selectedGridPoint.getY() + 1
              && !other.equals(selectedGridPoint)) {
-                Color temp = grid.get((int) selectedGridPoint.getX()).get((int) selectedGridPoint.getY());
+                Tile temp = grid.get((int) selectedGridPoint.getX()).get((int) selectedGridPoint.getY());
                 grid.get((int) selectedGridPoint.getX()).set((int) selectedGridPoint.getY(), grid.get((int) other.getX()).get((int) other.getY()));
                 grid.get((int) other.getX()).set((int) other.getY(), temp);
             }
@@ -59,9 +48,9 @@ public class Grid {
     public void render(Graphics2D g) {
         // Render the grid.
         for (int i = 0; i < grid.size(); i++) {
-            ArrayList<Color> row = grid.get(i);
+            ArrayList<Tile> row = grid.get(i);
             for (int j = 0; j < row.size(); j++) {
-                g.setColor(row.get(j));
+                g.setColor(row.get(j).getColor());
                 int x = PADDING + i * (SQUARE_SIZE + PADDING);
                 int y = PADDING + j * (SQUARE_SIZE + PADDING);
                 int width = SQUARE_SIZE;
