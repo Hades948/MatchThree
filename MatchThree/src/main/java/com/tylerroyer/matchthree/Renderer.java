@@ -3,11 +3,7 @@ package com.tylerroyer.matchthree;
 import java.awt.*;
 
 public class Renderer extends Canvas {
-    private Grid grid;
-
-    public Renderer(Grid grid) {
-        this.grid = grid;
-
+    public Renderer() {
         setBackground(Color.BLACK);
         setSize(710, 710);
 
@@ -41,7 +37,7 @@ public class Renderer extends Canvas {
     @Override
     public void paint(Graphics graphics) {
         Graphics2D g = (Graphics2D) graphics;
-        grid.render(g);
+        Game.getGrid().render(g);
         repaint();
     }
 }

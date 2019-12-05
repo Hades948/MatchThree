@@ -5,15 +5,13 @@ public class Game {
     private long frameStartTime;
     private final float TARGET_FPS = 60.0f;
 
-    Grid grid;
-
     public Game() {
         running = true;
 
         grid = new Grid();
         keyboardHandler = new KeyboardHandler();
         mouseHandler = new MouseHandler();
-        renderer = new Renderer(grid);
+        renderer = new Renderer();
         window = new Window();
 
         frameStartTime = System.currentTimeMillis();
@@ -45,6 +43,11 @@ public class Game {
     private static KeyboardHandler keyboardHandler;
     public static KeyboardHandler getKeyboardHandler() {
         return keyboardHandler;
+    }
+
+    private static Grid grid;
+    public static Grid getGrid() {
+        return grid;
     }
 
     public void loop() {
