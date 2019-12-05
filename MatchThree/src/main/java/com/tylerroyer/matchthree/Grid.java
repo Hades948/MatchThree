@@ -1,6 +1,7 @@
 package com.tylerroyer.matchthree;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -8,7 +9,7 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 
 public class Grid {
-    private enum Mode {SELECTION, STABILITY_CHECK}
+    private enum Mode {SELECTION, STABILITY_CHECK, BREAKING}
     private Mode currentMode;
 
     private boolean invalidFlag = false;
@@ -22,10 +23,13 @@ public class Grid {
     private Tile firstSelectedTile = null;
     private Tile secondSelectedTile = null;
 
+    private HashSet<Point> unstablePoints;
+
     private ArrayList<ArrayList<Tile>> grid;
 
     public Grid() {
         grid = new ArrayList<>();
+        unstablePoints = new HashSet<>();
         for (int i = 0; i < SIZE; i++) {
             ArrayList<Tile> row = new ArrayList<>();
             for (int j = 0; j < SIZE; j++) {
@@ -108,7 +112,8 @@ public class Grid {
                 firstSelectedTile.resetOffsets();
                 secondSelectedTile.resetOffsets();
 
-                if (isStable() && !invalidFlag) {
+                boolean stable = isStable();
+                if (stable && !invalidFlag) {
                     // Invalid move
                     invalidFlag = true;
                     
@@ -127,10 +132,29 @@ public class Grid {
 
                     invalidFlag = false;
 
-                    currentMode = Mode.SELECTION;
+                    if (stable) {
+                        currentMode = Mode.SELECTION;
+                    } else {
+                        currentMode = Mode.BREAKING;
+                    }
                 }
             }
 
+            break;
+        case BREAKING:
+            populateUnstablePoints();
+
+            for (Point p : unstablePoints) {
+                Point absolutePoint = getAbsolutePoint((int) p.getX(), (int) p.getY());
+                absolutePoint.x += SQUARE_SIZE / 2;
+                absolutePoint.y += SQUARE_SIZE / 2;
+                Tile tile = grid.get((int) p.getX()).get((int) p.getY());
+                Game.addParticleEmitter(new ParticleEmitter(tile.getColor(), (int) absolutePoint.getX(), (int) absolutePoint.getY(), 20));
+                tile.setColor(Game.getRenderer().getBackground());
+            }
+
+            unstablePoints.clear();
+            currentMode = Mode.SELECTION;
             break;
         }
     }
@@ -145,7 +169,7 @@ public class Grid {
             }
         }
 
-        // Vertical stability
+        // Vertical stability.
         for (int column = 0; column < grid.get(0).size(); column++) {
             for (int row = 0; row < grid.size() - 2; row++) {
                 if (grid.get(row).get(column).getColor() == grid.get(row+1).get(column).getColor()
@@ -156,6 +180,32 @@ public class Grid {
         }
 
         return true;
+    }
+
+    private void populateUnstablePoints() {
+        // Horizontal
+        for (int i = 0; i < grid.size(); i++) {
+            ArrayList<Tile> row = grid.get(i);
+            for (int j = 0; j < row.size() - 2; j++) {
+                if (row.get(j).getColor() == row.get(j+1).getColor() && row.get(j+1).getColor() == row.get(j+2).getColor()) {
+                    unstablePoints.add(new Point(i, j));
+                    unstablePoints.add(new Point(i, j+1));
+                    unstablePoints.add(new Point(i, j+2));
+                }
+            }
+        }
+
+        // Vertical
+        for (int column = 0; column < grid.get(0).size(); column++) {
+            for (int row = 0; row < grid.size() - 2; row++) {
+                if (grid.get(row).get(column).getColor() == grid.get(row+1).get(column).getColor()
+                 && grid.get(row+1).get(column).getColor() == grid.get(row+2).get(column).getColor()) {
+                     unstablePoints.add(new Point(row, column));
+                     unstablePoints.add(new Point(row+1, column));
+                     unstablePoints.add(new Point(row+2, column));
+                 }
+            }
+        }
     }
 
     private void shuffle() {
@@ -202,6 +252,7 @@ public class Grid {
         }
     }
 
+    // Maps absolute point relative to canvas to a grid point.
     private Point getGridPoint(int x, int y) {
         int gridX = (x - 5) / (SQUARE_SIZE + PADDING);
         int gridY = (y - 5) / (SQUARE_SIZE + PADDING);
@@ -212,5 +263,13 @@ public class Grid {
         if (gridY > SIZE - 1) gridY = SIZE - 1;
 
         return new Point(gridX, gridY);
+    }
+
+    // Maps grid point to absolute point relative to canvas
+    private Point getAbsolutePoint(int gridX, int gridY) {
+        int x = gridX * (SQUARE_SIZE + PADDING) + PADDING;
+        int y = gridY * (SQUARE_SIZE + PADDING) + PADDING;
+
+        return new Point(x, y);
     }
 }

@@ -87,7 +87,6 @@ public class Game {
         grid.update();
         for (ParticleEmitter emitter : new ArrayList<ParticleEmitter>(particleEmitters)) {
             emitter.update();
-            System.out.println("updating");
             if (!emitter.isAlive()) {
                 particleEmitters.remove(emitter);
             }

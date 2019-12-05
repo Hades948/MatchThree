@@ -1,6 +1,7 @@
 package com.tylerroyer.matchthree;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Renderer extends Canvas {
     public Renderer() {
@@ -39,7 +40,7 @@ public class Renderer extends Canvas {
         Graphics2D g = (Graphics2D) graphics;
         
         Game.getGrid().render(g);
-        for (ParticleEmitter emitter : Game.getParticleEmitters()) {
+        for (ParticleEmitter emitter : new ArrayList<ParticleEmitter>(Game.getParticleEmitters())) {
             emitter.render(g);
         }
 
