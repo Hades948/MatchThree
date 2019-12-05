@@ -13,10 +13,10 @@ public class Grid {
     private int SQUARE_SIZE = 60;
     private int PADDING = 10;
 
-    private Point selectedGridPoint = null;
-    private Point other = null;
-    private Tile selectedTile = null;
-    private Tile otherTile = null;
+    private Point firstSelectedPoint = null;
+    private Point secondSelectedPoint = null;
+    private Tile firstSelectedTile = null;
+    private Tile secondSelectedTile = null;
 
     private ArrayList<ArrayList<Tile>> grid;
 
@@ -42,57 +42,64 @@ public class Grid {
 
         switch (currentMode) {
         case SELECTION:
-            if (Game.getMouseHandler().isDown() && selectedGridPoint == null) {
-                selectedGridPoint = getGridPoint(Game.getMouseHandler().getX(), Game.getMouseHandler().getY());
+            // Selecting first tile by pressing mouse.
+            if (Game.getMouseHandler().isDown() && firstSelectedPoint == null) {
+                firstSelectedPoint = getGridPoint(Game.getMouseHandler().getX(), Game.getMouseHandler().getY());
+                firstSelectedTile = grid.get((int) firstSelectedPoint.getX()).get((int) firstSelectedPoint.getY());
             }
 
-            if (!Game.getMouseHandler().isDown() && selectedGridPoint != null) {
-                other = getGridPoint(Game.getMouseHandler().getX(), Game.getMouseHandler().getY());
-                selectedTile = grid.get((int) selectedGridPoint.getX()).get((int) selectedGridPoint.getY());
-                otherTile = grid.get((int) other.getX()).get((int) other.getY());
+            // Selecting second tile by releasing mouse.
+            if (!Game.getMouseHandler().isDown() && firstSelectedPoint != null) {
+                secondSelectedPoint = getGridPoint(Game.getMouseHandler().getX(), Game.getMouseHandler().getY());
+                secondSelectedTile = grid.get((int) secondSelectedPoint.getX()).get((int) secondSelectedPoint.getY());
 
                 // Set directions.
-                if (other.getX() == selectedGridPoint.getX() - 1 && other.getY() == selectedGridPoint.getY()) {
-                    // Other is to the left of selected.
-                    selectedTile.setDirection(Tile.Direction.LEFT);
-                    otherTile.setDirection(Tile.Direction.RIGHT);
+                if (secondSelectedPoint.getX() == firstSelectedPoint.getX() - 1 && secondSelectedPoint.getY() == firstSelectedPoint.getY()) {
+                    // Second is to the left of first.
+                    firstSelectedTile.setDirection(Tile.Direction.LEFT);
+                    secondSelectedTile.setDirection(Tile.Direction.RIGHT);
                     currentMode = Mode.STABILITY_CHECK;
-                } else if (other.getX() == selectedGridPoint.getX() + 1 && other.getY() == selectedGridPoint.getY()) {
-                    // Other is to the right of selected.
-                    selectedTile.setDirection(Tile.Direction.RIGHT);
-                    otherTile.setDirection(Tile.Direction.LEFT);
+                } else if (secondSelectedPoint.getX() == firstSelectedPoint.getX() + 1 && secondSelectedPoint.getY() == firstSelectedPoint.getY()) {
+                    // Second is to the right of first.
+                    firstSelectedTile.setDirection(Tile.Direction.RIGHT);
+                    secondSelectedTile.setDirection(Tile.Direction.LEFT);
                     currentMode = Mode.STABILITY_CHECK;
-                } else if (other.getX() == selectedGridPoint.getX() && other.getY() == selectedGridPoint.getY() - 1) {
-                    // Other above selected.
-                    selectedTile.setDirection(Tile.Direction.UP);
-                    otherTile.setDirection(Tile.Direction.DOWN);
+                } else if (secondSelectedPoint.getX() == firstSelectedPoint.getX() && secondSelectedPoint.getY() == firstSelectedPoint.getY() - 1) {
+                    // Second is above first.
+                    firstSelectedTile.setDirection(Tile.Direction.UP);
+                    secondSelectedTile.setDirection(Tile.Direction.DOWN);
                     currentMode = Mode.STABILITY_CHECK;
-                } else if (other.getX() == selectedGridPoint.getX() && other.getY() == selectedGridPoint.getY() + 1) {
-                    // Other below selected.
-                    selectedTile.setDirection(Tile.Direction.DOWN);
-                    otherTile.setDirection(Tile.Direction.UP);
+                } else if (secondSelectedPoint.getX() == firstSelectedPoint.getX() && secondSelectedPoint.getY() == firstSelectedPoint.getY() + 1) {
+                    // Second is below first.
+                    firstSelectedTile.setDirection(Tile.Direction.DOWN);
+                    secondSelectedTile.setDirection(Tile.Direction.UP);
                     currentMode = Mode.STABILITY_CHECK;
                 } else {
-                    selectedGridPoint = other = null;
-                    selectedTile = otherTile = null;
+                    // Reset because of invalid selection.
+                    firstSelectedPoint = secondSelectedPoint = null;
+                    firstSelectedTile = secondSelectedTile = null;
                 }
             }
             break;
         case STABILITY_CHECK:
-            if (otherTile.getDirection() == Tile.Direction.LEFT && otherTile.getOffsetX() < -(SQUARE_SIZE+PADDING)
-             || otherTile.getDirection() == Tile.Direction.RIGHT && otherTile.getOffsetX() > +(SQUARE_SIZE+PADDING)
-             || otherTile.getDirection() == Tile.Direction.UP && otherTile.getOffsetY() < -(SQUARE_SIZE+PADDING)
-             || otherTile.getDirection() == Tile.Direction.DOWN && otherTile.getOffsetY() > +(SQUARE_SIZE+PADDING)) {
-                grid.get((int) selectedGridPoint.getX()).set((int) selectedGridPoint.getY(), grid.get((int) other.getX()).get((int) other.getY()));
-                grid.get((int) other.getX()).set((int) other.getY(), selectedTile);
+            // Check for the end of the flip animation.
+            if (secondSelectedTile.getDirection() == Tile.Direction.LEFT && secondSelectedTile.getOffsetX() < -(SQUARE_SIZE+PADDING)
+             || secondSelectedTile.getDirection() == Tile.Direction.RIGHT && secondSelectedTile.getOffsetX() > +(SQUARE_SIZE+PADDING)
+             || secondSelectedTile.getDirection() == Tile.Direction.UP && secondSelectedTile.getOffsetY() < -(SQUARE_SIZE+PADDING)
+             || secondSelectedTile.getDirection() == Tile.Direction.DOWN && secondSelectedTile.getOffsetY() > +(SQUARE_SIZE+PADDING)) {
+                // Swap tiles.
+                grid.get((int) firstSelectedPoint.getX()).set((int) firstSelectedPoint.getY(), secondSelectedTile);
+                grid.get((int) secondSelectedPoint.getX()).set((int) secondSelectedPoint.getY(), firstSelectedTile);
 
-                selectedTile.setDirection(Tile.Direction.NONE);
-                otherTile.setDirection(Tile.Direction.NONE);
-                selectedTile.resetOffsets();
-                otherTile.resetOffsets();
+                // Stop and reset tile movement.
+                firstSelectedTile.setDirection(Tile.Direction.NONE);
+                secondSelectedTile.setDirection(Tile.Direction.NONE);
+                firstSelectedTile.resetOffsets();
+                secondSelectedTile.resetOffsets();
 
-                selectedGridPoint = other = null;
-                selectedTile = otherTile = null;
+                // Clear selection.
+                firstSelectedPoint = secondSelectedPoint = null;
+                firstSelectedTile = secondSelectedTile = null;
 
                 currentMode = Mode.SELECTION;
             }
@@ -122,10 +129,10 @@ public class Grid {
         g.fillRect(highlighterX, highlighterY, SQUARE_SIZE + PADDING, SQUARE_SIZE + PADDING);
 
         // Render the selector
-        if (currentMode == Mode.SELECTION && selectedGridPoint != null) {
+        if (currentMode == Mode.SELECTION && firstSelectedPoint != null) {
             g.setColor(new Color(255, 255, 255));
-            int selectorX = (int) selectedGridPoint.getX() * (SQUARE_SIZE + PADDING) + PADDING / 2;
-            int selectorY = (int) selectedGridPoint.getY() * (SQUARE_SIZE + PADDING) + PADDING / 2;
+            int selectorX = (int) firstSelectedPoint.getX() * (SQUARE_SIZE + PADDING) + PADDING / 2;
+            int selectorY = (int) firstSelectedPoint.getY() * (SQUARE_SIZE + PADDING) + PADDING / 2;
             g.drawRect(selectorX, selectorY, SQUARE_SIZE + PADDING, SQUARE_SIZE + PADDING);
         }
     }
