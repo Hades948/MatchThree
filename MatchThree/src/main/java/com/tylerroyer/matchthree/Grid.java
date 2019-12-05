@@ -10,6 +10,8 @@ public class Grid {
     private enum Mode {SELECTION, STABILITY_CHECK}
     private Mode currentMode;
 
+    private boolean invalidFlag = false;
+
     private int SIZE = 10;
     private int SQUARE_SIZE = 60;
     private int PADDING = 10;
@@ -86,26 +88,42 @@ public class Grid {
             break;
         case STABILITY_CHECK:
             // Check for the end of the flip animation.
-            if (secondSelectedTile.getDirection() == Tile.Direction.LEFT && secondSelectedTile.getOffsetX() < -(SQUARE_SIZE+PADDING)
-             || secondSelectedTile.getDirection() == Tile.Direction.RIGHT && secondSelectedTile.getOffsetX() > +(SQUARE_SIZE+PADDING)
-             || secondSelectedTile.getDirection() == Tile.Direction.UP && secondSelectedTile.getOffsetY() < -(SQUARE_SIZE+PADDING)
-             || secondSelectedTile.getDirection() == Tile.Direction.DOWN && secondSelectedTile.getOffsetY() > +(SQUARE_SIZE+PADDING)) {
+            if (firstSelectedTile.getDirection() == Tile.Direction.LEFT && firstSelectedTile.getOffsetX() < -(SQUARE_SIZE+PADDING)
+             || firstSelectedTile.getDirection() == Tile.Direction.RIGHT && firstSelectedTile.getOffsetX() > +(SQUARE_SIZE+PADDING)
+             || firstSelectedTile.getDirection() == Tile.Direction.UP && firstSelectedTile.getOffsetY() < -(SQUARE_SIZE+PADDING)
+             || firstSelectedTile.getDirection() == Tile.Direction.DOWN && firstSelectedTile.getOffsetY() > +(SQUARE_SIZE+PADDING)) {
                 // Swap tiles.
+                System.out.println("Swap");
                 grid.get((int) firstSelectedPoint.getX()).set((int) firstSelectedPoint.getY(), secondSelectedTile);
                 grid.get((int) secondSelectedPoint.getX()).set((int) secondSelectedPoint.getY(), firstSelectedTile);
 
-                // Stop and reset tile movement.
-                firstSelectedTile.setDirection(Tile.Direction.NONE);
-                secondSelectedTile.setDirection(Tile.Direction.NONE);
+                // Reset tile movement.
                 firstSelectedTile.resetOffsets();
                 secondSelectedTile.resetOffsets();
 
-                // Clear selection.
-                firstSelectedPoint = secondSelectedPoint = null;
-                firstSelectedTile = secondSelectedTile = null;
+                if (isStable() && !invalidFlag) {
+                    // Invalid move
+                    invalidFlag = true;
+                    
+                    Point temp = firstSelectedPoint;
+                    firstSelectedPoint = secondSelectedPoint;
+                    secondSelectedPoint = temp;
 
-                currentMode = Mode.SELECTION;
+                    firstSelectedTile.reverseDirection();
+                    secondSelectedTile.reverseDirection();
+                } else {
+                    // Clear selection and stop tiles.
+                    firstSelectedTile.setDirection(Tile.Direction.NONE);
+                    secondSelectedTile.setDirection(Tile.Direction.NONE);
+                    firstSelectedPoint = secondSelectedPoint = null;
+                    firstSelectedTile = secondSelectedTile = null;
+
+                    invalidFlag = false;
+
+                    currentMode = Mode.SELECTION;
+                }
             }
+
             break;
         }
     }

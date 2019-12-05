@@ -60,6 +60,26 @@ public class Tile {
         this.direction = direction;
     }
 
+    public void reverseDirection() {
+        switch (direction) {
+        case UP:
+            direction = Direction.DOWN;
+            break;
+        case DOWN:
+            direction = Direction.UP;
+            break;
+        case LEFT:
+            direction = Direction.RIGHT;
+            break;
+        case RIGHT:
+            direction = Direction.LEFT;
+            break;
+        case NONE:
+        default:
+            break;
+        }
+    }
+
     public void update() {
         switch (direction) {
         case UP:
