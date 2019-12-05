@@ -107,6 +107,29 @@ public class Grid {
         }
     }
 
+    private boolean isStable() {
+        // Horizontal stability.
+        for (ArrayList<Tile> row : grid) {
+            for (int i = 0; i < row.size() - 2; i++) {
+                if (row.get(i).getColor() == row.get(i+1).getColor() && row.get(i+1).getColor() == row.get(i+2).getColor()) {
+                    return false;
+                }
+            }
+        }
+
+        // Verticle stability
+        for (int column = 0; column < grid.get(0).size(); column++) {
+            for (int row = 0; row < grid.size() - 2; row++) {
+                if (grid.get(row).get(column).getColor() == grid.get(row+1).get(column).getColor()
+                 && grid.get(row+1).get(column).getColor() == grid.get(row+2).get(column).getColor()) {
+                     return false;
+                 }
+            }
+        }
+
+        return true;
+    }
+
     public void render(Graphics2D g) {
         // Render the grid.
         for (int i = 0; i < grid.size(); i++) {
