@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 
 public class Particle {
-    private static final float GRAVITY = 0.06f;
+    private static final float GRAVITY = 0.4f;
     private static final int SIZE = 15;
 
     private Color color;

@@ -1,5 +1,8 @@
 package com.tylerroyer.matchthree;
 
+import java.awt.Color;
+import java.util.ArrayList;
+
 public class Game {
     private float lastFrameTime, timeLeftInFrame, currentFPS;
     private long frameStartTime;
@@ -9,6 +12,7 @@ public class Game {
         running = true;
 
         grid = new Grid();
+        particleEmitters = new ArrayList<>();
         keyboardHandler = new KeyboardHandler();
         mouseHandler = new MouseHandler();
         renderer = new Renderer();
@@ -50,6 +54,14 @@ public class Game {
         return grid;
     }
 
+    private static ArrayList<ParticleEmitter> particleEmitters;
+    public static ArrayList<ParticleEmitter> getParticleEmitters() {
+        return particleEmitters;
+    }
+    public static void addParticleEmitter(ParticleEmitter particleEmitter) {
+        particleEmitters.add(particleEmitter);
+    }
+
     public void loop() {
         while(isRunning()) {
             frameStartTime = System.currentTimeMillis();
@@ -73,6 +85,13 @@ public class Game {
 
     private void update() {
         grid.update();
+        for (ParticleEmitter emitter : new ArrayList<ParticleEmitter>(particleEmitters)) {
+            emitter.update();
+            System.out.println("updating");
+            if (!emitter.isAlive()) {
+                particleEmitters.remove(emitter);
+            }
+        }
     }
 
     // Currently not being used.  It seems like the canvas is drawing in a seperate thread.

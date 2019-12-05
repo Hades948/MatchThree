@@ -37,7 +37,12 @@ public class Renderer extends Canvas {
     @Override
     public void paint(Graphics graphics) {
         Graphics2D g = (Graphics2D) graphics;
+        
         Game.getGrid().render(g);
+        for (ParticleEmitter emitter : Game.getParticleEmitters()) {
+            emitter.render(g);
+        }
+
         repaint();
     }
 }

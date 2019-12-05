@@ -19,7 +19,7 @@ public class ParticleEmitter {
 
         Random rand = new Random();
         for (int i = 0; i < count; i++) {
-            Particle p = new Particle(color, x, y, rand.nextFloat() * 2 - 1, rand.nextFloat() * 3 - 5);
+            Particle p = new Particle(color, x, y, rand.nextFloat() * 4 - 2, rand.nextFloat() * 4 - 12);
             particles.add(p);
         }
     }
@@ -33,7 +33,6 @@ public class ParticleEmitter {
 
         for (Particle p : particles) {
             p.update();
-            // TODO Calculate status of emitter based on particles' y-values.
             if (p.getY() < Game.getRenderer().getHeight()) {
                 alive = true;
             }
