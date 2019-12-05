@@ -46,14 +46,15 @@ public class Grid {
             }
         }
 
-        if (Game.getKeyboardHandler().isKeyDown(KeyEvent.VK_S)) {
-            for (int i = 0; i < 50 || !isStable(); i++) {
-                shuffle();
-            }
-        }
-
         switch (currentMode) {
         case SELECTION:
+            // Dynamic shuffle
+            if (Game.getKeyboardHandler().isKeyDown(KeyEvent.VK_S)) {
+                for (int i = 0; i < 50 || !isStable(); i++) {
+                    shuffle();
+                }
+            }
+
             // Selecting first tile by pressing mouse.
             if (Game.getMouseHandler().isDown() && firstSelectedPoint == null) {
                 firstSelectedPoint = getGridPoint(Game.getMouseHandler().getX(), Game.getMouseHandler().getY());
