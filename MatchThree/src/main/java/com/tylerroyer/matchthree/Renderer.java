@@ -12,6 +12,7 @@ public class Renderer extends Canvas {
         setSize(710, 710);
 
         addMouseListener(Game.getMouseHandler());
+        addKeyListener(Game.getKeyboardHandler());
     }
 
     @Override
@@ -35,8 +36,6 @@ public class Renderer extends Canvas {
 		// scale and transfer offscreen to window
         g.drawImage(offscreen, 0, 0, this);
         // End double buffer code //
-
-        
     }
 
     @Override

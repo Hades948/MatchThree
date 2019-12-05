@@ -11,6 +11,7 @@ public class Game {
         running = true;
 
         grid = new Grid();
+        keyboardHandler = new KeyboardHandler();
         mouseHandler = new MouseHandler();
         renderer = new Renderer(grid);
         window = new Window();
@@ -39,6 +40,11 @@ public class Game {
     private static MouseHandler mouseHandler;
     public static MouseHandler getMouseHandler() {
         return mouseHandler;
+    }
+
+    private static KeyboardHandler keyboardHandler;
+    public static KeyboardHandler getKeyboardHandler() {
+        return keyboardHandler;
     }
 
     public void loop() {

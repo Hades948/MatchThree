@@ -5,6 +5,7 @@ import java.util.Random;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
 
 public class Grid {
     private enum Mode {SELECTION, STABILITY_CHECK}
@@ -42,6 +43,12 @@ public class Grid {
         for (ArrayList<Tile> row : grid) {
             for (Tile tile : row) {
                 tile.update();
+            }
+        }
+
+        if (Game.getKeyboardHandler().isKeyDown(KeyEvent.VK_S)) {
+            for (int i = 0; i < 50 || !isStable(); i++) {
+                shuffle();
             }
         }
 
@@ -93,7 +100,6 @@ public class Grid {
              || firstSelectedTile.getDirection() == Tile.Direction.UP && firstSelectedTile.getOffsetY() < -(SQUARE_SIZE+PADDING)
              || firstSelectedTile.getDirection() == Tile.Direction.DOWN && firstSelectedTile.getOffsetY() > +(SQUARE_SIZE+PADDING)) {
                 // Swap tiles.
-                System.out.println("Swap");
                 grid.get((int) firstSelectedPoint.getX()).set((int) firstSelectedPoint.getY(), secondSelectedTile);
                 grid.get((int) secondSelectedPoint.getX()).set((int) secondSelectedPoint.getY(), firstSelectedTile);
 
