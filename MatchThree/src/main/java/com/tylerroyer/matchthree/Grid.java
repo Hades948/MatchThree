@@ -1,6 +1,7 @@
 package com.tylerroyer.matchthree;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -29,6 +30,8 @@ public class Grid {
             }
             grid.add(row);
         }
+
+        while(!isStable()) shuffle();
 
         currentMode = Mode.SELECTION;
     }
@@ -117,7 +120,7 @@ public class Grid {
             }
         }
 
-        // Verticle stability
+        // Vertical stability
         for (int column = 0; column < grid.get(0).size(); column++) {
             for (int row = 0; row < grid.size() - 2; row++) {
                 if (grid.get(row).get(column).getColor() == grid.get(row+1).get(column).getColor()
@@ -128,6 +131,20 @@ public class Grid {
         }
 
         return true;
+    }
+
+    private void shuffle() {
+        Random rand = new Random();
+        int x1 = rand.nextInt(10);
+        int y1 = rand.nextInt(10);
+        int x2 = rand.nextInt(10);
+        int y2 = rand.nextInt(10);
+
+        Tile t1 = grid.get(x1).get(y1);
+        Tile t2 = grid.get(x2).get(y2);
+
+        grid.get(x1).set(y1, t2);
+        grid.get(x2).set(y2, t1);
     }
 
     public void render(Graphics2D g) {
