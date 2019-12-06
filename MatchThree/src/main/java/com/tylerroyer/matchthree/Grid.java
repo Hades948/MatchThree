@@ -9,7 +9,9 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 
 public class Grid {
-    private enum Mode {SELECTION, STABILITY_CHECK, BREAKING}
+    private static final Color INVISIBLE = new Color(0, 0, 0, 0); // TODO Use this.
+
+    private enum Mode {SELECTION, STABILITY_CHECK, BREAKING, GRAVITY}
     private Mode currentMode;
 
     private boolean invalidFlag = false;
@@ -62,13 +64,13 @@ public class Grid {
             // Selecting first tile by pressing mouse.
             if (Game.getMouseHandler().isDown() && firstSelectedPoint == null) {
                 firstSelectedPoint = getGridPoint(Game.getMouseHandler().getX(), Game.getMouseHandler().getY());
-                firstSelectedTile = grid.get((int) firstSelectedPoint.getX()).get((int) firstSelectedPoint.getY());
+                firstSelectedTile = grid.get((int) firstSelectedPoint.getY()).get((int) firstSelectedPoint.getX());
             }
 
             // Selecting second tile by releasing mouse.
             if (!Game.getMouseHandler().isDown() && firstSelectedPoint != null) {
                 secondSelectedPoint = getGridPoint(Game.getMouseHandler().getX(), Game.getMouseHandler().getY());
-                secondSelectedTile = grid.get((int) secondSelectedPoint.getX()).get((int) secondSelectedPoint.getY());
+                secondSelectedTile = grid.get((int) secondSelectedPoint.getY()).get((int) secondSelectedPoint.getX());
 
                 // Set directions.
                 if (secondSelectedPoint.getX() == firstSelectedPoint.getX() - 1 && secondSelectedPoint.getY() == firstSelectedPoint.getY()) {
@@ -105,8 +107,8 @@ public class Grid {
              || firstSelectedTile.getDirection() == Tile.Direction.UP && firstSelectedTile.getOffsetY() < -(SQUARE_SIZE+PADDING)
              || firstSelectedTile.getDirection() == Tile.Direction.DOWN && firstSelectedTile.getOffsetY() > +(SQUARE_SIZE+PADDING)) {
                 // Swap tiles.
-                grid.get((int) firstSelectedPoint.getX()).set((int) firstSelectedPoint.getY(), secondSelectedTile);
-                grid.get((int) secondSelectedPoint.getX()).set((int) secondSelectedPoint.getY(), firstSelectedTile);
+                grid.get((int) firstSelectedPoint.getY()).set((int) firstSelectedPoint.getX(), secondSelectedTile);
+                grid.get((int) secondSelectedPoint.getY()).set((int) secondSelectedPoint.getX(), firstSelectedTile);
 
                 // Reset tile movement.
                 firstSelectedTile.resetOffsets();
@@ -148,18 +150,56 @@ public class Grid {
                 Point absolutePoint = getAbsolutePoint((int) p.getX(), (int) p.getY());
                 absolutePoint.x += SQUARE_SIZE / 2;
                 absolutePoint.y += SQUARE_SIZE / 2;
-                Tile tile = grid.get((int) p.getX()).get((int) p.getY());
+                Tile tile = grid.get((int) p.getY()).get((int) p.getX());
                 Game.addParticleEmitter(new ParticleEmitter(tile.getColor(), (int) absolutePoint.getX(), (int) absolutePoint.getY(), 20));
-                tile.setColor(Game.getRenderer().getBackground());
+                tile.setColor(INVISIBLE);
             }
 
             unstablePoints.clear();
-            currentMode = Mode.SELECTION;
+            currentMode = Mode.GRAVITY;
+            break;
+        case GRAVITY:
+            // TODO Animaiton
+            boolean gridFilled = false;
+            while(!gridFilled) {
+                gridFilled = true;
+
+                // TODO This should ideally be done in the opposite order.
+                // Refills top row.
+                for (int column = 0; column < grid.get(0).size(); column++) {
+                    if (grid.get(0).get(column).getColor() == INVISIBLE) {
+                        grid.get(0).get(column).setRandomColor();
+                        gridFilled = false;
+                    }
+                }
+
+                // Moves everything down by one row.
+                for (int row = 0; row < grid.size() - 1; row++) {
+                    for (int column = 0; column < grid.get(0).size(); column++) {
+                        Tile thisTile = grid.get(row).get(column);
+                        Tile tileBelow = grid.get(row+1).get(column);
+
+                        if (tileBelow.getColor() == INVISIBLE) {
+                            tileBelow.setColor(thisTile.getColor());
+                            thisTile.setColor(INVISIBLE);
+                            gridFilled = false;
+                        }
+                    }
+                }
+            }
+
+            if (!isStable()) {
+                currentMode = Mode.BREAKING;
+            } else {
+                currentMode = Mode.SELECTION;
+            }
+
             break;
         }
     }
 
     private boolean isStable() {
+        // TODO This still works but the comments may be wrong.
         // Horizontal stability.
         for (ArrayList<Tile> row : grid) {
             for (int i = 0; i < row.size() - 2; i++) {
@@ -184,13 +224,13 @@ public class Grid {
 
     private void populateUnstablePoints() {
         // Horizontal
-        for (int i = 0; i < grid.size(); i++) {
-            ArrayList<Tile> row = grid.get(i);
-            for (int j = 0; j < row.size() - 2; j++) {
-                if (row.get(j).getColor() == row.get(j+1).getColor() && row.get(j+1).getColor() == row.get(j+2).getColor()) {
-                    unstablePoints.add(new Point(i, j));
-                    unstablePoints.add(new Point(i, j+1));
-                    unstablePoints.add(new Point(i, j+2));
+        for (int rowIndex = 0; rowIndex < grid.size(); rowIndex++) {
+            ArrayList<Tile> row = grid.get(rowIndex);
+            for (int columnIndex = 0; columnIndex < row.size() - 2; columnIndex++) {
+                if (row.get(columnIndex).getColor() == row.get(columnIndex+1).getColor() && row.get(columnIndex+1).getColor() == row.get(columnIndex+2).getColor()) {
+                    unstablePoints.add(new Point(columnIndex, rowIndex));
+                    unstablePoints.add(new Point(columnIndex+1, rowIndex));
+                    unstablePoints.add(new Point(columnIndex+2, rowIndex));
                 }
             }
         }
@@ -200,9 +240,9 @@ public class Grid {
             for (int row = 0; row < grid.size() - 2; row++) {
                 if (grid.get(row).get(column).getColor() == grid.get(row+1).get(column).getColor()
                  && grid.get(row+1).get(column).getColor() == grid.get(row+2).get(column).getColor()) {
-                     unstablePoints.add(new Point(row, column));
-                     unstablePoints.add(new Point(row+1, column));
-                     unstablePoints.add(new Point(row+2, column));
+                     unstablePoints.add(new Point(column, row));
+                     unstablePoints.add(new Point(column, row+1));
+                     unstablePoints.add(new Point(column, row+2));
                  }
             }
         }
@@ -224,12 +264,12 @@ public class Grid {
 
     public void render(Graphics2D g) {
         // Render the grid.
-        for (int i = 0; i < grid.size(); i++) {
-            ArrayList<Tile> row = grid.get(i);
-            for (int j = 0; j < row.size(); j++) {
-                g.setColor(row.get(j).getColor());
-                int x = PADDING + i * (SQUARE_SIZE + PADDING) + grid.get(i).get(j).getOffsetX();
-                int y = PADDING + j * (SQUARE_SIZE + PADDING) + grid.get(i).get(j).getOffsetY();
+        for (int rowIndex = 0; rowIndex < grid.size(); rowIndex++) {
+            ArrayList<Tile> row = grid.get(rowIndex);
+            for (int columnIndex = 0; columnIndex < row.size(); columnIndex++) {
+                g.setColor(row.get(columnIndex).getColor());
+                int x = PADDING + columnIndex * (SQUARE_SIZE + PADDING) + grid.get(rowIndex).get(columnIndex).getOffsetX();
+                int y = PADDING + rowIndex * (SQUARE_SIZE + PADDING) + grid.get(rowIndex).get(columnIndex).getOffsetY();
                 int width = SQUARE_SIZE;
                 int height = SQUARE_SIZE;
                 g.fillRect(x, y, width, height);

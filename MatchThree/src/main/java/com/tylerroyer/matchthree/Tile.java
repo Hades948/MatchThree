@@ -27,7 +27,7 @@ public class Tile {
     private Direction direction;
 
     public Tile() {
-        color = colors.get(new Random().nextInt(colors.size()));
+        setRandomColor();
         offsetX = offsetY = 0;
         direction = Direction.NONE;
     }
@@ -38,6 +38,10 @@ public class Tile {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public void setRandomColor() {
+        this.color = colors.get(new Random().nextInt(colors.size()));
     }
 
     public int getOffsetX() {
