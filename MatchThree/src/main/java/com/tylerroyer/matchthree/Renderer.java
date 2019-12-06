@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Renderer extends Canvas {
     public Renderer() {
-        setBackground(Color.BLACK);
+        setBackground(new Color (40, 10, 40));
         setSize(710, 710);
 
         addMouseListener(Game.getMouseHandler());

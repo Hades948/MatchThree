@@ -34,5 +34,7 @@ public class Particle {
     public void render(Graphics2D g) {
         g.setColor(color);
         g.fillRect((int) x, (int) y, SIZE, SIZE);
+        g.setColor(Color.BLACK);
+        g.drawRect((int) x, (int) y, SIZE, SIZE);
     }
 }

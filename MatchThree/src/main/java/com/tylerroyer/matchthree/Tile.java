@@ -6,14 +6,14 @@ import java.util.Random;
 
 public class Tile {
     private static ArrayList<Color> colors;
-    private static final int SPEED = 4;
+    private static final int SPEED = 8;
 
     static {
         colors = new ArrayList<>();
         final Color RED = new Color(200, 0, 0);
         final Color BLUE = new Color(0, 0, 200);
         final Color GREEN = new Color(0, 180, 0);
-        final Color PURPLE = new Color(100, 0, 100);
+        final Color PURPLE = new Color(115, 0, 115);
         colors.add(RED);
         colors.add(BLUE);
         colors.add(GREEN);
