@@ -1,6 +1,5 @@
 package com.tylerroyer.matchthree;
 
-import java.awt.Color;
 import java.util.ArrayList;
 
 public class Game {
@@ -11,7 +10,7 @@ public class Game {
     public Game() {
         running = true;
 
-        grid = new Grid();
+        setCurrentScreen(new GridScreen());
         particleEmitters = new ArrayList<>();
         keyboardHandler = new KeyboardHandler();
         mouseHandler = new MouseHandler();
@@ -49,9 +48,12 @@ public class Game {
         return keyboardHandler;
     }
 
-    private static Grid grid;
-    public static Grid getGrid() {
-        return grid;
+    private static Screen currentScreen;
+    public static Screen getCurrentScreen() {
+        return currentScreen;
+    }
+    public static void setCurrentScreen(Screen screen) {
+        currentScreen = screen;
     }
 
     private static ArrayList<ParticleEmitter> particleEmitters;
@@ -84,7 +86,7 @@ public class Game {
     }
 
     private void update() {
-        grid.update();
+        getCurrentScreen().update();
         for (ParticleEmitter emitter : new ArrayList<ParticleEmitter>(particleEmitters)) {
             emitter.update();
             if (!emitter.isAlive()) {

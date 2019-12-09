@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class Tile {
     private static ArrayList<Color> colors;
-    private static final int SPEED = 8;
+    private static final int SPEED = 7;
 
     static {
         colors = new ArrayList<>();
@@ -51,6 +51,10 @@ public class Tile {
     public int getOffsetY() {
         return offsetY;
     }
+
+    public void setOffsetY(int offsetY) {
+        this.offsetY = offsetY;
+	}
 
     public void resetOffsets() {
         offsetX = offsetY = 0;

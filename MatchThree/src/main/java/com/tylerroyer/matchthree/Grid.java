@@ -9,7 +9,7 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 
 public class Grid {
-    private enum Mode {SELECTION, STABILITY_CHECK, BREAKING, GRAVITY, GRAVITY_ANIMATION}
+    private enum Mode {SELECTION, SELECTION_ANIMATION, BREAKING, GRAVITY, GRAVITY_ANIMATION}
     private Mode currentMode;
 
     private boolean invalidFlag = false;
@@ -83,22 +83,22 @@ public class Grid {
                     // Second is to the left of first.
                     firstSelectedTile.setDirection(Tile.Direction.LEFT);
                     secondSelectedTile.setDirection(Tile.Direction.RIGHT);
-                    currentMode = Mode.STABILITY_CHECK;
+                    currentMode = Mode.SELECTION_ANIMATION;
                 } else if (secondSelectedPoint.getX() == firstSelectedPoint.getX() + 1 && secondSelectedPoint.getY() == firstSelectedPoint.getY()) {
                     // Second is to the right of first.
                     firstSelectedTile.setDirection(Tile.Direction.RIGHT);
                     secondSelectedTile.setDirection(Tile.Direction.LEFT);
-                    currentMode = Mode.STABILITY_CHECK;
+                    currentMode = Mode.SELECTION_ANIMATION;
                 } else if (secondSelectedPoint.getX() == firstSelectedPoint.getX() && secondSelectedPoint.getY() == firstSelectedPoint.getY() - 1) {
                     // Second is above first.
                     firstSelectedTile.setDirection(Tile.Direction.UP);
                     secondSelectedTile.setDirection(Tile.Direction.DOWN);
-                    currentMode = Mode.STABILITY_CHECK;
+                    currentMode = Mode.SELECTION_ANIMATION;
                 } else if (secondSelectedPoint.getX() == firstSelectedPoint.getX() && secondSelectedPoint.getY() == firstSelectedPoint.getY() + 1) {
                     // Second is below first.
                     firstSelectedTile.setDirection(Tile.Direction.DOWN);
                     secondSelectedTile.setDirection(Tile.Direction.UP);
-                    currentMode = Mode.STABILITY_CHECK;
+                    currentMode = Mode.SELECTION_ANIMATION;
                 } else {
                     // Reset because of invalid selection.
                     firstSelectedPoint = secondSelectedPoint = null;
@@ -106,7 +106,7 @@ public class Grid {
                 }
             }
             break;
-        case STABILITY_CHECK:
+        case SELECTION_ANIMATION:
             // Check for the end of the flip animation.
             if (firstSelectedTile.getDirection() == Tile.Direction.LEFT && firstSelectedTile.getOffsetX() < -(SQUARE_SIZE+PADDING)
              || firstSelectedTile.getDirection() == Tile.Direction.RIGHT && firstSelectedTile.getOffsetX() > +(SQUARE_SIZE+PADDING)

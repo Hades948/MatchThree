@@ -39,7 +39,7 @@ public class Renderer extends Canvas {
     public void paint(Graphics graphics) {
         Graphics2D g = (Graphics2D) graphics;
         
-        Game.getGrid().render(g);
+        Game.getCurrentScreen().render(g);
         for (ParticleEmitter emitter : new ArrayList<ParticleEmitter>(Game.getParticleEmitters())) {
             emitter.render(g);
         }
