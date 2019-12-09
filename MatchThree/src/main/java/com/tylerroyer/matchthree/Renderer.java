@@ -4,16 +4,24 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Renderer extends Canvas {
+    private float lastFrameTime, timeLeftInFrame, currentFPS;
+    private long frameStartTime;
+    private final float TARGET_FPS = 60.0f;
+
     public Renderer() {
         setBackground(new Color (40, 10, 40));
         setSize(710, 710);
 
         addMouseListener(Game.getMouseHandler());
         addKeyListener(Game.getKeyboardHandler());
+
+        frameStartTime = System.currentTimeMillis();
     }
 
     @Override
     public void update(Graphics g) {
+        frameStartTime = System.currentTimeMillis();
+
         // Double buffer code //
 		Graphics offgc;
 		Image offscreen = null;
@@ -33,6 +41,26 @@ public class Renderer extends Canvas {
 		// scale and transfer offscreen to window
         g.drawImage(offscreen, 0, 0, this);
         // End double buffer code //
+
+        Game.getCurrentScreen().update();
+        for (ParticleEmitter emitter : new ArrayList<ParticleEmitter>(Game.getParticleEmitters())) {
+            emitter.update();
+            if (!emitter.isAlive()) {
+                Game.getParticleEmitters().remove(emitter);
+            }
+        }
+
+        // FPS Calculation
+        lastFrameTime = System.currentTimeMillis() - frameStartTime;
+        timeLeftInFrame = (1000 / TARGET_FPS) - lastFrameTime;
+        if (timeLeftInFrame >= 0) {
+            // On time.  Sleep remainder of frame.
+            try { Thread.sleep((long) timeLeftInFrame); } catch (InterruptedException e) { e.printStackTrace(); }
+            currentFPS = TARGET_FPS;
+        } else {
+            // Running behind
+            currentFPS = 1000 / lastFrameTime;
+        }
     }
 
     @Override

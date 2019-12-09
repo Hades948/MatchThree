@@ -3,21 +3,14 @@ package com.tylerroyer.matchthree;
 import java.util.ArrayList;
 
 public class Game {
-    private float lastFrameTime, timeLeftInFrame, currentFPS;
-    private long frameStartTime;
-    private final float TARGET_FPS = 60.0f;
-
-    public Game() {
+    public static void setup() {
         running = true;
 
-        setCurrentScreen(new GridScreen());
         particleEmitters = new ArrayList<>();
         keyboardHandler = new KeyboardHandler();
         mouseHandler = new MouseHandler();
         renderer = new Renderer();
         window = new Window();
-
-        frameStartTime = System.currentTimeMillis();
     }
 
     private static boolean running;
@@ -62,42 +55,5 @@ public class Game {
     }
     public static void addParticleEmitter(ParticleEmitter particleEmitter) {
         particleEmitters.add(particleEmitter);
-    }
-
-    public void loop() {
-        while(isRunning()) {
-            frameStartTime = System.currentTimeMillis();
-
-            update();
-            show();
-
-            // FPS Calculation
-            lastFrameTime = System.currentTimeMillis() - frameStartTime;
-            timeLeftInFrame = (1000 / TARGET_FPS) - lastFrameTime;
-            if (timeLeftInFrame >= 0) {
-                // On time.  Sleep remainder of frame.
-                try { Thread.sleep((long) timeLeftInFrame); } catch (InterruptedException e) { e.printStackTrace(); }
-                currentFPS = TARGET_FPS;
-            } else {
-                // Running behind
-                currentFPS = 1000 / lastFrameTime;
-            }
-        }
-    }
-
-    private void update() {
-        getCurrentScreen().update();
-        for (ParticleEmitter emitter : new ArrayList<ParticleEmitter>(particleEmitters)) {
-            emitter.update();
-            if (!emitter.isAlive()) {
-                particleEmitters.remove(emitter);
-            }
-        }
-    }
-
-    // Currently not being used.  It seems like the canvas is drawing in a seperate thread.
-    // This may not be an issue except for CMEs.  If these start to pop up, I'll need to
-    // Change the rendering a bit.  This is staying here for now just in case.
-    private void show() {
     }
 }
