@@ -11,7 +11,7 @@ public class Looper extends Canvas {
 
     Looper() {
         setBackground(new Color (40, 10, 40));
-        setSize(710, 710);
+        setSize(867, 910);
 
         addMouseListener(Game.getMouseHandler());
         addKeyListener(Game.getKeyboardHandler());

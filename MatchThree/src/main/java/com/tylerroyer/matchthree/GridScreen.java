@@ -4,26 +4,35 @@ import com.tylerroyer.engine.*;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.awt.Point;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.awt.event.KeyEvent;
 
+import javax.imageio.ImageIO;
+
 public class GridScreen extends Screen {
-    private int SIZE = 10;
-    private int SQUARE_SIZE = 60;
-    private int PADDING = 10;
-    
+    private final int SIZE = 10;
+    private final int SQUARE_SIZE = 60;
+    private final int PADDING = 10;
+    private final int GRID_OFFSET_X = 79;
+    private final int GRID_OFFSET_Y = 141;
+
     private ArrayList<ArrayList<Tile>> grid;
 
     ArrayList<ParticleEmitter> particleEmitters = new ArrayList<>();
-    
-    private enum Mode {SELECTION, SELECTION_ANIMATION, BREAKING, GRAVITY, GRAVITY_ANIMATION}
+
+    private enum Mode {
+        SELECTION, SELECTION_ANIMATION, BREAKING, GRAVITY, GRAVITY_ANIMATION
+    }
+
     private Mode currentMode;
-    
+
     private boolean invalidFlag = false;
-    
+
     private Point firstSelectedPoint = null;
     private Point secondSelectedPoint = null;
     private Tile firstSelectedTile = null;
@@ -33,7 +42,16 @@ public class GridScreen extends Screen {
     private ArrayList<Integer> fallIndecies;
     private int tilesFalling, tilesFallen;
 
+    private BufferedImage ambientBackground, gridBackground;
+
     public GridScreen() {
+        try {
+            InputStream is = new BufferedInputStream(new FileInputStream("ambient_background_1.png"));
+            ambientBackground = ImageIO.read(is);
+            is = new BufferedInputStream(new FileInputStream("grid_background.png"));
+            gridBackground = ImageIO.read(is);
+        } catch (IOException e) {e.printStackTrace();}
+
         grid = new ArrayList<>();
         for (int i = 0; i < SIZE; i++) {
             ArrayList<Tile> row = new ArrayList<>();
@@ -75,13 +93,13 @@ public class GridScreen extends Screen {
 
             // Selecting first tile by pressing mouse.
             if (Game.getMouseHandler().isDown() && firstSelectedPoint == null) {
-                firstSelectedPoint = getGridPoint(Game.getMouseHandler().getX(), Game.getMouseHandler().getY());
+                firstSelectedPoint = getGridPoint(Game.getMouseHandler().getX() - GRID_OFFSET_X, Game.getMouseHandler().getY() - GRID_OFFSET_Y);
                 firstSelectedTile = grid.get((int) firstSelectedPoint.getY()).get((int) firstSelectedPoint.getX());
             }
 
             // Selecting second tile by releasing mouse.
             if (!Game.getMouseHandler().isDown() && firstSelectedPoint != null) {
-                secondSelectedPoint = getGridPoint(Game.getMouseHandler().getX(), Game.getMouseHandler().getY());
+                secondSelectedPoint = getGridPoint(Game.getMouseHandler().getX() - GRID_OFFSET_X, Game.getMouseHandler().getY() - GRID_OFFSET_Y);
                 secondSelectedTile = grid.get((int) secondSelectedPoint.getY()).get((int) secondSelectedPoint.getX());
 
                 // Set directions.
@@ -242,6 +260,10 @@ public class GridScreen extends Screen {
 
     @Override
     public void render(Graphics2D g) {
+        // ***** Render background ***** //
+        g.drawImage(ambientBackground, 0, 0, Game.getWindow());
+        g.drawImage(gridBackground, 0, 0, Game.getWindow());
+
         // ***** Render grid ***** //
         // Render the grid.
         for (int rowIndex = 0; rowIndex < grid.size(); rowIndex++) {
@@ -250,8 +272,8 @@ public class GridScreen extends Screen {
                 Tile tile = row.get(columnIndex);
                 if (tile != null) {
                     g.setColor(tile.getColor());
-                    int x = PADDING + columnIndex * (SQUARE_SIZE + PADDING) + tile.getOffsetX();
-                    int y = PADDING + rowIndex * (SQUARE_SIZE + PADDING) + tile.getOffsetY();
+                    int x = PADDING + columnIndex * (SQUARE_SIZE + PADDING) + tile.getOffsetX() + GRID_OFFSET_X;
+                    int y = PADDING + rowIndex * (SQUARE_SIZE + PADDING) + tile.getOffsetY() + GRID_OFFSET_Y;
                     int width = SQUARE_SIZE;
                     int height = SQUARE_SIZE;
                     g.fillRect(x, y, width, height);
@@ -263,16 +285,16 @@ public class GridScreen extends Screen {
 
         // Render the highlighter
         g.setColor(new Color(255, 255, 255, 50));
-        Point gridPoint = getGridPoint(Game.getMouseHandler().getX(), Game.getMouseHandler().getY());
-        int highlighterX = (int) gridPoint.getX() * (SQUARE_SIZE + PADDING) + PADDING / 2;
-        int highlighterY = (int) gridPoint.getY() * (SQUARE_SIZE + PADDING) + PADDING / 2;
+        Point gridPoint = getGridPoint(Game.getMouseHandler().getX() - GRID_OFFSET_X, Game.getMouseHandler().getY() - GRID_OFFSET_Y);
+        int highlighterX = (int) gridPoint.getX() * (SQUARE_SIZE + PADDING) + PADDING / 2 + GRID_OFFSET_X;
+        int highlighterY = (int) gridPoint.getY() * (SQUARE_SIZE + PADDING) + PADDING / 2 + GRID_OFFSET_Y;
         g.fillRect(highlighterX, highlighterY, SQUARE_SIZE + PADDING, SQUARE_SIZE + PADDING);
 
         // Render the selector
         if (currentMode == Mode.SELECTION && firstSelectedPoint != null) {
             g.setColor(new Color(255, 255, 255));
-            int selectorX = (int) firstSelectedPoint.getX() * (SQUARE_SIZE + PADDING) + PADDING / 2;
-            int selectorY = (int) firstSelectedPoint.getY() * (SQUARE_SIZE + PADDING) + PADDING / 2;
+            int selectorX = (int) firstSelectedPoint.getX() * (SQUARE_SIZE + PADDING) + PADDING / 2 + GRID_OFFSET_X;
+            int selectorY = (int) firstSelectedPoint.getY() * (SQUARE_SIZE + PADDING) + PADDING / 2 + GRID_OFFSET_Y;
             g.drawRect(selectorX, selectorY, SQUARE_SIZE + PADDING, SQUARE_SIZE + PADDING);
         }
 
@@ -364,8 +386,8 @@ public class GridScreen extends Screen {
 
     // Maps grid point to absolute point relative to canvas
     private Point getAbsolutePoint(int gridX, int gridY) {
-        int x = gridX * (SQUARE_SIZE + PADDING) + PADDING;
-        int y = gridY * (SQUARE_SIZE + PADDING) + PADDING;
+        int x = gridX * (SQUARE_SIZE + PADDING) + PADDING + GRID_OFFSET_X;
+        int y = gridY * (SQUARE_SIZE + PADDING) + PADDING + GRID_OFFSET_Y;
 
         return new Point(x, y);
     }
