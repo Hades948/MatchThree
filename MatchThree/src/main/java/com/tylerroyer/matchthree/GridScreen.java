@@ -3,6 +3,7 @@ package com.tylerroyer.matchthree;
 import com.tylerroyer.engine.*;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.Point;
@@ -20,6 +21,9 @@ public class GridScreen extends Screen {
     private final int PADDING = 10;
     private final int GRID_OFFSET_X = 79;
     private final int GRID_OFFSET_Y = 141;
+
+    private int crystals = 0;
+    private int combo = 1;
 
     private ArrayList<ArrayList<Tile>> grid;
 
@@ -182,6 +186,7 @@ public class GridScreen extends Screen {
                 Tile tile = grid.get((int) p.getY()).get((int) p.getX());
                 particleEmitters.add(new ParticleEmitter(tile.getColor(), (int) absolutePoint.getX(), (int) absolutePoint.getY(), 5));
                 grid.get((int) p.getY()).set((int) p.getX(), null);
+                crystals += 4 * combo;
             }
 
             unstablePoints.clear();
@@ -202,8 +207,10 @@ public class GridScreen extends Screen {
             if (isGridFull) {
                 if (isStable()) {
                     currentMode = Mode.SELECTION;
+                    combo = 1;
                 } else {
                     populateUnstablePoints();
+                    combo = Math.min(combo + 1, 4);
                     currentMode = Mode.BREAKING;
                 }
             } else {
@@ -297,6 +304,12 @@ public class GridScreen extends Screen {
             int selectorY = (int) firstSelectedPoint.getY() * (SQUARE_SIZE + PADDING) + PADDING / 2 + GRID_OFFSET_Y;
             g.drawRect(selectorX, selectorY, SQUARE_SIZE + PADDING, SQUARE_SIZE + PADDING);
         }
+
+        // ***** Render overlay ***** //
+        g.setColor(new Color(200, 200, 255));
+        g.setFont(new Font("Arial", Font.PLAIN, 48)); 
+        g.drawString("Crystals: " + crystals, 90, 110);
+        g.drawString("Combo: x" + combo, 550, 110);
 
         // ***** Render emitters ***** //
         for (ParticleEmitter emitter : particleEmitters) {
