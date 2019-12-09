@@ -33,7 +33,7 @@ public class ParticleEmitter {
 
         for (Particle p : particles) {
             p.update();
-            if (p.getY() < Game.getRenderer().getHeight()) {
+            if (p.getY() < Game.getWindow().getHeight()) {
                 alive = true;
             }
         }

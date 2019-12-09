@@ -3,22 +3,11 @@ package com.tylerroyer.matchthree;
 import java.util.ArrayList;
 
 public class Game {
-    public static void setup() {
-        running = true;
-
-        particleEmitters = new ArrayList<>();
+    public static void init() {
         keyboardHandler = new KeyboardHandler();
         mouseHandler = new MouseHandler();
-        renderer = new Renderer();
+        looper = new Looper();
         window = new Window();
-    }
-
-    private static boolean running;
-    public static boolean isRunning() {
-        return running;
-    }
-    public static void stop() {
-        running = false;
     }
 
     private static Window window;
@@ -26,9 +15,9 @@ public class Game {
         return window;
     }
 
-    private static Renderer renderer;
-    public static Renderer getRenderer() {
-        return renderer;
+    private static Looper looper;
+    public static Looper getLooper() {
+        return looper;
     }
 
     private static MouseHandler mouseHandler;
@@ -47,13 +36,5 @@ public class Game {
     }
     public static void setCurrentScreen(Screen screen) {
         currentScreen = screen;
-    }
-
-    private static ArrayList<ParticleEmitter> particleEmitters;
-    public static ArrayList<ParticleEmitter> getParticleEmitters() {
-        return particleEmitters;
-    }
-    public static void addParticleEmitter(ParticleEmitter particleEmitter) {
-        particleEmitters.add(particleEmitter);
     }
 }

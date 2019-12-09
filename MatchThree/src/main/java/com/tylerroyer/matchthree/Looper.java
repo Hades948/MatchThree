@@ -3,12 +3,12 @@ package com.tylerroyer.matchthree;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class Renderer extends Canvas {
+public class Looper extends Canvas {
     private float lastFrameTime, timeLeftInFrame, currentFPS;
     private long frameStartTime;
     private final float TARGET_FPS = 60.0f;
 
-    public Renderer() {
+    public Looper() {
         setBackground(new Color (40, 10, 40));
         setSize(710, 710);
 
@@ -43,12 +43,6 @@ public class Renderer extends Canvas {
         // End double buffer code //
 
         Game.getCurrentScreen().update();
-        for (ParticleEmitter emitter : new ArrayList<ParticleEmitter>(Game.getParticleEmitters())) {
-            emitter.update();
-            if (!emitter.isAlive()) {
-                Game.getParticleEmitters().remove(emitter);
-            }
-        }
 
         // FPS Calculation
         lastFrameTime = System.currentTimeMillis() - frameStartTime;
@@ -66,12 +60,7 @@ public class Renderer extends Canvas {
     @Override
     public void paint(Graphics graphics) {
         Graphics2D g = (Graphics2D) graphics;
-        
         Game.getCurrentScreen().render(g);
-        for (ParticleEmitter emitter : new ArrayList<ParticleEmitter>(Game.getParticleEmitters())) {
-            emitter.render(g);
-        }
-
         repaint();
     }
 }
