@@ -5,7 +5,7 @@ import java.awt.event.MouseListener;
 import java.awt.MouseInfo;
 
 public class MouseHandler implements MouseListener {
-    private boolean isDown = false; // TODO This probably shouldn't start as false :/
+    private boolean isDown = false;
 
     public MouseHandler() {}
 

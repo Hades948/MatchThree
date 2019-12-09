@@ -283,7 +283,6 @@ public class GridScreen extends Screen {
     }
 
     private boolean isStable() {
-        // TODO This still works but the comments may be wrong.
         // Horizontal stability.
         for (ArrayList<Tile> row : grid) {
             for (int i = 0; i < row.size() - 2; i++) {
