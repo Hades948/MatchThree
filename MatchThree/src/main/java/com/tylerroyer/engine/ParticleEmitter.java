@@ -7,17 +7,12 @@ import java.util.Random;
 
 public class ParticleEmitter {
     private boolean alive = true;
-    private Color color;
-    private int x, y;
     private ArrayList<Particle> particles;
 
     public ParticleEmitter(Color color, int x, int y, int count) {
-        particles = new ArrayList<>();
-        this.color = color;
-        this.x = x;
-        this.y = y;
-
         Random rand = new Random();
+
+        particles = new ArrayList<>();
         for (int i = 0; i < count; i++) {
             Particle p = new Particle(color, x, y, rand.nextFloat() * 4 - 2, rand.nextFloat() * 4 - 12);
             particles.add(p);

@@ -3,6 +3,8 @@ package com.tylerroyer.engine;
 import java.awt.*;
 
 public class Looper extends Canvas {
+    private static final long serialVersionUID = 4453541421570323839L;
+    
     private float lastFrameTime, timeLeftInFrame, currentFPS;
     private long frameStartTime;
     private final float TARGET_FPS = 60.0f;
