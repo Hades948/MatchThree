@@ -1,10 +1,10 @@
-package com.tylerroyer.matchthree;
+package com.tylerroyer.engine;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.MouseInfo;
 
-class MouseHandler implements MouseListener {
+public class MouseHandler implements MouseListener {
     private boolean isDown = false; // TODO This probably shouldn't start as false :/
 
     public MouseHandler() {}

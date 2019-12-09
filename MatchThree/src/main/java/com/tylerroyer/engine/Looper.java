@@ -1,7 +1,6 @@
-package com.tylerroyer.matchthree;
+package com.tylerroyer.engine;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 public class Looper extends Canvas {
     private float lastFrameTime, timeLeftInFrame, currentFPS;
@@ -62,5 +61,9 @@ public class Looper extends Canvas {
         Graphics2D g = (Graphics2D) graphics;
         Game.getCurrentScreen().render(g);
         repaint();
+    }
+
+    public double getCurrentFPS() {
+        return currentFPS;
     }
 }

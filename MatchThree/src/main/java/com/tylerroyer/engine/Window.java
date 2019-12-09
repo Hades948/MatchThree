@@ -1,4 +1,4 @@
-package com.tylerroyer.matchthree;
+package com.tylerroyer.engine;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
