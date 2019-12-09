@@ -7,7 +7,7 @@ import java.util.HashSet;
 public class KeyboardHandler implements KeyListener {
     private HashSet<Integer> downKeys;
 
-    public KeyboardHandler() {
+    KeyboardHandler() {
         downKeys = new HashSet<>();
     }
 

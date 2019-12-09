@@ -11,7 +11,7 @@ public class Particle {
     private float x, y;
     private float velX, velY;
 
-    public Particle(Color color, int initialX, int initialY, float initialVelX, float initialVelY) {
+    Particle(Color color, int initialX, int initialY, float initialVelX, float initialVelY) {
         this.color = color;
         this.x = initialX;
         this.x -= SIZE / 2; // Adjusts for the center.
@@ -20,18 +20,18 @@ public class Particle {
         this.velY = initialVelY;
     }
 
-    public void update() {
+    void update() {
         velY += GRAVITY;
 
         x += velX;
         y += velY;
     }
 
-    public int getY() {
+    int getY() {
         return (int) y;
     }
 
-    public void render(Graphics2D g) {
+    void render(Graphics2D g) {
         g.setColor(color);
         g.fillRect((int) x, (int) y, SIZE, SIZE);
         g.setColor(Color.BLACK);

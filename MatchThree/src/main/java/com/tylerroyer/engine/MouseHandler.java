@@ -7,7 +7,7 @@ import java.awt.MouseInfo;
 public class MouseHandler implements MouseListener {
     private boolean isDown = false;
 
-    public MouseHandler() {}
+    MouseHandler() {}
 
     public int getX() {
         int absoluteX = (int) MouseInfo.getPointerInfo().getLocation().getX();

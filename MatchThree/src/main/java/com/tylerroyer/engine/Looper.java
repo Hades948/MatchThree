@@ -9,7 +9,7 @@ public class Looper extends Canvas {
     private long frameStartTime;
     private final float TARGET_FPS = 60.0f;
 
-    public Looper() {
+    Looper() {
         setBackground(new Color (40, 10, 40));
         setSize(710, 710);
 

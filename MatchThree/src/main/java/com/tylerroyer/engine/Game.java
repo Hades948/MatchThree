@@ -14,7 +14,7 @@ public class Game {
     }
 
     private static Looper looper;
-    public static Looper getLooper() {
+    static Looper getLooper() {
         return looper;
     }
 
