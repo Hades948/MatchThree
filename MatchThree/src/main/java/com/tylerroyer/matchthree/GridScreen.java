@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.Point;
 import java.io.*;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
@@ -184,7 +185,7 @@ public class GridScreen extends Screen {
                 absolutePoint.x += SQUARE_SIZE / 2;
                 absolutePoint.y += SQUARE_SIZE / 2;
                 Tile tile = grid.get((int) p.getY()).get((int) p.getX());
-                particleEmitters.add(new ParticleEmitter(tile.getColor(), (int) absolutePoint.getX(), (int) absolutePoint.getY(), 5));
+                particleEmitters.add(new ParticleEmitter(tile.getColor(), (int) absolutePoint.getX(), (int) absolutePoint.getY(), 4 * combo));
                 grid.get((int) p.getY()).set((int) p.getX(), null);
                 crystals += 4 * combo;
             }
@@ -308,7 +309,9 @@ public class GridScreen extends Screen {
         // ***** Render overlay ***** //
         g.setColor(new Color(200, 200, 255));
         g.setFont(new Font("Arial", Font.PLAIN, 48)); 
-        g.drawString("Crystals: " + crystals, 90, 110);
+        NumberFormat format = NumberFormat.getInstance();
+        format.setGroupingUsed(true);
+        g.drawString("Crystals: " + format.format(crystals), 90, 110);
         g.drawString("Combo: x" + combo, 550, 110);
 
         // ***** Render emitters ***** //
