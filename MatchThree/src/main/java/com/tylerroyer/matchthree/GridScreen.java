@@ -8,14 +8,11 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.Point;
-import java.io.*;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.awt.event.KeyEvent;
-
-import javax.imageio.ImageIO;
 
 public class GridScreen extends Screen {
     private final int SIZE = 10;
