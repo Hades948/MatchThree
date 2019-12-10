@@ -1,4 +1,4 @@
-package com.tylerroyer.engine;
+package com.tylerroyer.engine.particles;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;

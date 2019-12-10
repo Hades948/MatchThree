@@ -1,4 +1,6 @@
-package com.tylerroyer.engine;
+package com.tylerroyer.engine.particles;
+
+import com.tylerroyer.engine.Game;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
