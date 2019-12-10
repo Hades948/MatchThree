@@ -6,9 +6,9 @@ import java.awt.BorderLayout;
 public class Window extends JFrame {
     private static final long serialVersionUID = 4159603562974028158L;
 
-    Window() {
+    Window(String title) {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setTitle("Match Three");
+        setTitle(title);
         getContentPane().add(Game.getLooper(), BorderLayout.CENTER);
         pack();
         setVisible(true);

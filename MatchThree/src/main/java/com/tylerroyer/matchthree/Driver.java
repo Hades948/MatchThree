@@ -7,6 +7,6 @@ public class Driver {
         Resources.init();
 
         Game.setCurrentScreen(new GridScreen());
-        Game.init(867, 910);
+        Game.init(867, 910, "Crystal's Quest");
     }
 }
