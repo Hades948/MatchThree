@@ -53,30 +53,20 @@ public class GridScreen extends Screen {
     private BufferedImage redCrystal, blueCrystal, purpleCrystal, greenCrystal;
     private BufferedImage redCrystalParticle, blueCrystalParticle, purpleCrystalParticle, greenCrystalParticle;
 
-    public GridScreen() {
-        try {
-            InputStream is = new BufferedInputStream(new FileInputStream("ambient_background_1.png"));
-            ambientBackground = ImageIO.read(is);
-            is = new BufferedInputStream(new FileInputStream("grid_background.png"));
-            gridBackground = ImageIO.read(is);
-            is = new BufferedInputStream(new FileInputStream("crystal_red.png"));
-            redCrystal = ImageIO.read(is);
-            is = new BufferedInputStream(new FileInputStream("crystal_blue.png"));
-            blueCrystal = ImageIO.read(is);
-            is = new BufferedInputStream(new FileInputStream("crystal_purple.png"));
-            purpleCrystal = ImageIO.read(is);
-            is = new BufferedInputStream(new FileInputStream("crystal_green.png"));
-            greenCrystal = ImageIO.read(is);
-            is = new BufferedInputStream(new FileInputStream("crystal_red_particle.png"));
-            redCrystalParticle = ImageIO.read(is);
-            is = new BufferedInputStream(new FileInputStream("crystal_blue_particle.png"));
-            blueCrystalParticle = ImageIO.read(is);
-            is = new BufferedInputStream(new FileInputStream("crystal_purple_particle.png"));
-            purpleCrystalParticle = ImageIO.read(is);
-            is = new BufferedInputStream(new FileInputStream("crystal_green_particle.png"));
-            greenCrystalParticle = ImageIO.read(is);
-        } catch (IOException e) {e.printStackTrace();}
+    public void loadResources() {
+        ambientBackground = Resources.loadGraphicalImage("ambient_background_1.png");
+        gridBackground = Resources.loadGraphicalImage("grid_background.png");
+        redCrystal = Resources.loadGraphicalImage("crystal_red.png");
+        blueCrystal = Resources.loadGraphicalImage("crystal_blue.png");
+        purpleCrystal = Resources.loadGraphicalImage("crystal_purple.png");
+        greenCrystal = Resources.loadGraphicalImage("crystal_green.png");
+        redCrystalParticle = Resources.loadGraphicalImage("crystal_red_particle.png");
+        blueCrystalParticle = Resources.loadGraphicalImage("crystal_blue_particle.png");
+        purpleCrystalParticle = Resources.loadGraphicalImage("crystal_purple_particle.png");
+        greenCrystalParticle = Resources.loadGraphicalImage("crystal_green_particle.png");
+    }
 
+    public GridScreen() {
         grid = new ArrayList<>();
         for (int i = 0; i < SIZE; i++) {
             ArrayList<Tile> row = new ArrayList<>();

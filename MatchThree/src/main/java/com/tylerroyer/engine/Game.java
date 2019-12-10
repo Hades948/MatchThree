@@ -33,6 +33,8 @@ public class Game {
         return currentScreen;
     }
     public static void setCurrentScreen(Screen screen) {
+        Resources.unloadAllResources();
         currentScreen = screen;
+        screen.loadResources();
     }
 }
