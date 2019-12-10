@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 
 public class Resources {
     private static HashMap<String, BufferedImage> graphical;
-    private static final String GRAPHICAL_PATH = "MatchThree/res/";
+    private static final String GRAPHICAL_PATH = "/res/";
 
     public static void init() {
         graphical = new HashMap<>();
@@ -20,8 +20,7 @@ public class Resources {
 
     public static BufferedImage loadGraphicalImage(String name) {
         try {
-            InputStream is = new BufferedInputStream(new FileInputStream(GRAPHICAL_PATH + name));
-            graphical.put(name, ImageIO.read(is));
+            graphical.put(name, ImageIO.read(Resources.class.getResourceAsStream(GRAPHICAL_PATH + name)));
         } catch (IOException e) {e.printStackTrace();}
 
         return getGraphicalResource(name);
