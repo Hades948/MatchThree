@@ -23,6 +23,7 @@ public class GridScreen extends Screen {
     private final int GRID_OFFSET_X = 79;
     private final int GRID_OFFSET_Y = 141;
 
+    private final int BASE_CRYSTALS = 3;
     private int crystals = 0;
     private int combo = 1;
 
@@ -48,6 +49,8 @@ public class GridScreen extends Screen {
     private int tilesFalling, tilesFallen;
 
     private BufferedImage ambientBackground, gridBackground;
+    private BufferedImage redCrystal, blueCrystal, purpleCrystal, greenCrystal;
+    private BufferedImage redCrystalParticle, blueCrystalParticle, purpleCrystalParticle, greenCrystalParticle;
 
     public GridScreen() {
         try {
@@ -55,6 +58,22 @@ public class GridScreen extends Screen {
             ambientBackground = ImageIO.read(is);
             is = new BufferedInputStream(new FileInputStream("grid_background.png"));
             gridBackground = ImageIO.read(is);
+            is = new BufferedInputStream(new FileInputStream("crystal_red.png"));
+            redCrystal = ImageIO.read(is);
+            is = new BufferedInputStream(new FileInputStream("crystal_blue.png"));
+            blueCrystal = ImageIO.read(is);
+            is = new BufferedInputStream(new FileInputStream("crystal_purple.png"));
+            purpleCrystal = ImageIO.read(is);
+            is = new BufferedInputStream(new FileInputStream("crystal_green.png"));
+            greenCrystal = ImageIO.read(is);
+            is = new BufferedInputStream(new FileInputStream("crystal_red_particle.png"));
+            redCrystalParticle = ImageIO.read(is);
+            is = new BufferedInputStream(new FileInputStream("crystal_blue_particle.png"));
+            blueCrystalParticle = ImageIO.read(is);
+            is = new BufferedInputStream(new FileInputStream("crystal_purple_particle.png"));
+            purpleCrystalParticle = ImageIO.read(is);
+            is = new BufferedInputStream(new FileInputStream("crystal_green_particle.png"));
+            greenCrystalParticle = ImageIO.read(is);
         } catch (IOException e) {e.printStackTrace();}
 
         grid = new ArrayList<>();
@@ -185,9 +204,16 @@ public class GridScreen extends Screen {
                 absolutePoint.x += SQUARE_SIZE / 2;
                 absolutePoint.y += SQUARE_SIZE / 2;
                 Tile tile = grid.get((int) p.getY()).get((int) p.getX());
-                particleEmitters.add(new ParticleEmitter(tile.getColor(), (int) absolutePoint.getX(), (int) absolutePoint.getY(), 4 * combo));
-                grid.get((int) p.getY()).set((int) p.getX(), null);
-                crystals += 4 * combo;
+                if (tile.getColor() == Tile.RED) {
+                    particleEmitters.add(new ImageParticleEmitter(redCrystalParticle, (int) absolutePoint.getX(), (int) absolutePoint.getY(), BASE_CRYSTALS * combo));    
+                } else if (tile.getColor() == Tile.BLUE) {
+                    particleEmitters.add(new ImageParticleEmitter(blueCrystalParticle, (int) absolutePoint.getX(), (int) absolutePoint.getY(), BASE_CRYSTALS * combo));    
+                } else if (tile.getColor() == Tile.PURPLE) {
+                    particleEmitters.add(new ImageParticleEmitter(purpleCrystalParticle, (int) absolutePoint.getX(), (int) absolutePoint.getY(), BASE_CRYSTALS * combo));
+                } else if (tile.getColor() == Tile.GREEN) {
+                    particleEmitters.add(new ImageParticleEmitter(greenCrystalParticle, (int) absolutePoint.getX(), (int) absolutePoint.getY(), BASE_CRYSTALS * combo));    
+                }grid.get((int) p.getY()).set((int) p.getX(), null);
+                crystals += BASE_CRYSTALS * combo;
             }
 
             unstablePoints.clear();
@@ -279,14 +305,17 @@ public class GridScreen extends Screen {
             for (int columnIndex = 0; columnIndex < row.size(); columnIndex++) {
                 Tile tile = row.get(columnIndex);
                 if (tile != null) {
-                    g.setColor(tile.getColor());
                     int x = PADDING + columnIndex * (SQUARE_SIZE + PADDING) + tile.getOffsetX() + GRID_OFFSET_X;
                     int y = PADDING + rowIndex * (SQUARE_SIZE + PADDING) + tile.getOffsetY() + GRID_OFFSET_Y;
-                    int width = SQUARE_SIZE;
-                    int height = SQUARE_SIZE;
-                    g.fillRect(x, y, width, height);
-                    g.setColor(Color.BLACK);
-                    g.drawRect(x, y, width, height);
+                    if (tile.getColor() == Tile.RED) {
+                        g.drawImage(redCrystal, x, y, Game.getWindow());
+                    } else if (tile.getColor() == Tile.BLUE) {
+                        g.drawImage(blueCrystal, x, y, Game.getWindow());
+                    } else if (tile.getColor() == Tile.PURPLE) {
+                        g.drawImage(purpleCrystal, x, y, Game.getWindow());
+                    } else if (tile.getColor() == Tile.GREEN) {
+                        g.drawImage(greenCrystal, x, y, Game.getWindow());
+                    }
                 }
             }
         }

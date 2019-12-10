@@ -1,23 +1,11 @@
 package com.tylerroyer.engine;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
-import java.util.Random;
 
-public class ParticleEmitter {
+public abstract class ParticleEmitter {
     private boolean alive = true;
-    private ArrayList<Particle> particles;
-
-    public ParticleEmitter(Color color, int x, int y, int count) {
-        Random rand = new Random();
-
-        particles = new ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            Particle p = new Particle(color, x, y, rand.nextFloat() * 4 - 2, rand.nextFloat() * 4 - 12);
-            particles.add(p);
-        }
-    }
+    protected ArrayList<Particle> particles;
 
     public boolean isAlive() {
         return alive;
