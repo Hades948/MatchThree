@@ -5,6 +5,9 @@ import com.tylerroyer.engine.Game;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+/**
+ * Implements Particle using an image.
+ */
 class ImageParticle extends Particle {
     private BufferedImage image;
 

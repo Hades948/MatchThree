@@ -2,6 +2,9 @@ package com.tylerroyer.engine;
 
 import java.awt.*;
 
+/**
+ * Handles all looping for the game including the updating and drawing cycles.
+ */
 public class Looper extends Canvas {
     private static final long serialVersionUID = 4453541421570323839L;
     
@@ -65,6 +68,9 @@ public class Looper extends Canvas {
         repaint();
     }
 
+    /**
+     * @return The game's current speed in frames per second.
+     */
     public double getCurrentFPS() {
         return currentFPS;
     }

@@ -2,6 +2,9 @@ package com.tylerroyer.engine.particles;
 
 import java.awt.Graphics2D;
 
+/**
+ * Describes a abstract single particle.
+ */
 abstract class Particle {
     private static final float GRAVITY = 0.4f;
 

@@ -3,6 +3,9 @@ package com.tylerroyer.engine.particles;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+/**
+ * Implements Particle using just a colored rectangle.
+ */
 public class ColorParticle extends Particle {
     private static final int SIZE = 15;
     private Color color;

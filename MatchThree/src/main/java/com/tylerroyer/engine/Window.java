@@ -3,6 +3,9 @@ package com.tylerroyer.engine;
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
 
+/**
+ * Provides basic window for the game.
+ */
 public class Window extends JFrame {
     private static final long serialVersionUID = 4159603562974028158L;
 
