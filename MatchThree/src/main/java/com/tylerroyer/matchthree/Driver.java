@@ -7,6 +7,6 @@ public class Driver {
         Resources.init();
 
         Game.setCurrentScreen(new GridScreen());
-        Game.init();
+        Game.init(867, 910);
     }
 }

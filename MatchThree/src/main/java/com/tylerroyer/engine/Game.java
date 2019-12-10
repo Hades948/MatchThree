@@ -1,10 +1,10 @@
 package com.tylerroyer.engine;
 
 public class Game {
-    public static void init() {
+    public static void init(int windowWidth, int windowHeight) {
         keyboardHandler = new KeyboardHandler();
         mouseHandler = new MouseHandler();
-        looper = new Looper();
+        looper = new Looper(windowWidth, windowHeight);
         window = new Window();
     }
 
