@@ -1,11 +1,12 @@
 package com.tylerroyer.engine;
 
 public class Game {
-    public static void init(int windowWidth, int windowHeight, String title) {
+    public static void init(int windowWidth, int windowHeight, String title, Screen firstScreen) {
         keyboardHandler = new KeyboardHandler();
         mouseHandler = new MouseHandler();
         looper = new Looper(windowWidth, windowHeight);
         window = new Window(title);
+        setCurrentScreen(new SplashScreen(firstScreen));
     }
 
     private static Window window;
