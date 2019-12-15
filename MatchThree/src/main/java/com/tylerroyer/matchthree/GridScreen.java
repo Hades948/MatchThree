@@ -95,6 +95,8 @@ public class GridScreen extends Screen {
     public void update() {
         if (gameOver) return;
 
+        timer.update();
+
         // ***** Update grid ***** //
         for (ArrayList<Tile> row : grid) {
             for (Tile tile : row) {
@@ -105,7 +107,6 @@ public class GridScreen extends Screen {
         switch (currentMode) {
         case SELECTION:
             // check for game over.
-            timer.update();
             if(timer.getTimeLeftMillis() == 0) {
                 gameOver = true;
                 Game.showMessage("You scored " + crystals + ".");
