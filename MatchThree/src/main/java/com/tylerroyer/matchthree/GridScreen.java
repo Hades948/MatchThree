@@ -36,6 +36,7 @@ public class GridScreen extends Screen {
     private Mode currentMode;
 
     private boolean invalidFlag = false;
+    private boolean gameOver = false;
 
     private Point firstSelectedPoint = null;
     private Point secondSelectedPoint = null;
@@ -50,6 +51,8 @@ public class GridScreen extends Screen {
     private BufferedImage redCrystal, blueCrystal, purpleCrystal, greenCrystal;
     private BufferedImage redCrystalParticle, blueCrystalParticle, purpleCrystalParticle, greenCrystalParticle;
 
+    private Timer timer;
+
     public void loadResources() {
         ambientBackground = Resources.loadGraphicalImage("ambient_background_1.png");
         gridBackground = Resources.loadGraphicalImage("grid_background.png");
@@ -61,6 +64,9 @@ public class GridScreen extends Screen {
         blueCrystalParticle = Resources.loadGraphicalImage("crystal_blue_particle.png");
         purpleCrystalParticle = Resources.loadGraphicalImage("crystal_purple_particle.png");
         greenCrystalParticle = Resources.loadGraphicalImage("crystal_green_particle.png");
+        
+        // Not the best place for this but it's the only place that works atm.
+        timer = new Timer(1 * 60 * 1000).start();
     }
 
     public GridScreen() {
@@ -87,6 +93,8 @@ public class GridScreen extends Screen {
 
     @Override
     public void update() {
+        if (gameOver) return;
+
         // ***** Update grid ***** //
         for (ArrayList<Tile> row : grid) {
             for (Tile tile : row) {
@@ -96,6 +104,14 @@ public class GridScreen extends Screen {
 
         switch (currentMode) {
         case SELECTION:
+            // check for game over.
+            timer.update();
+            if(timer.getTimeLeftMillis() == 0) {
+                gameOver = true;
+                Game.showMessage("You scored " + crystals + ".");
+                Game.close();
+            }
+            
             // Dynamic shuffle
             if (Game.getKeyboardHandler().isKeyDown(KeyEvent.VK_S)) {
                 for (int i = 0; i < 50 || !isStable(); i++) {
@@ -335,6 +351,9 @@ public class GridScreen extends Screen {
         for (ParticleEmitter emitter : particleEmitters) {
             emitter.render(g);
         }
+
+        // ***** Render timer ***** //
+        g.drawString(String.format("%.0f", Math.ceil(timer.getTimeLeftMillis() / 1000.0)), 10, 50);
     }
 
     private boolean isStable() {

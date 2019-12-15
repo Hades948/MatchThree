@@ -1,5 +1,7 @@
 package com.tylerroyer.engine;
 
+import javax.swing.JOptionPane;
+
 /**
  * Static classs to hold all important instances for the game.
  */
@@ -58,5 +60,13 @@ public class Game {
         // Set next screen and load its resources.
         currentScreen = screen;
         screen.loadResources();
+    }
+
+    public static void close() {
+        System.exit(0);
+    }
+
+    public static void showMessage(String message) {
+        JOptionPane.showMessageDialog(getWindow(), message);
     }
 }
