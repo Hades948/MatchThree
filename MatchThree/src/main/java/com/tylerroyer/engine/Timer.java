@@ -11,22 +11,20 @@ public class Timer {
         running = false;
     }
 
-    public Timer start() {
+    public void start() {
         running = true;
-        return this;
     }
 
-    public Timer pause() {
+    public void pause() {
         running = false;
-        return this;
     }
 
     public void update() {
+        long now = System.currentTimeMillis();
         if(running) {
-            long now = System.currentTimeMillis();
             elapsed += (now - timeOfLastUpdate);
-            timeOfLastUpdate = now;
         }
+        timeOfLastUpdate = now;
     }
 
     public long getTimeLeftMillis() {

@@ -66,7 +66,8 @@ public class GridScreen extends Screen {
         greenCrystalParticle = Resources.loadGraphicalImage("crystal_green_particle.png");
         
         // Not the best place for this but it's the only place that works atm.
-        timer = new Timer(1 * 60 * 1000).start();
+        timer = new Timer(1 * 60 * 1000);
+        timer.start();
     }
 
     public GridScreen() {
