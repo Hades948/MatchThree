@@ -52,6 +52,7 @@ public class GridScreen extends Screen {
     private BufferedImage redCrystalParticle, blueCrystalParticle, purpleCrystalParticle, greenCrystalParticle;
 
     private Timer timer;
+    private Button pauseButton;
 
     public void loadResources() {
         ambientBackground = Resources.loadGraphicalImage("ambient_background_1.png");
@@ -64,6 +65,11 @@ public class GridScreen extends Screen {
         blueCrystalParticle = Resources.loadGraphicalImage("crystal_blue_particle.png");
         purpleCrystalParticle = Resources.loadGraphicalImage("crystal_purple_particle.png");
         greenCrystalParticle = Resources.loadGraphicalImage("crystal_green_particle.png");
+        
+        BufferedImage pausedPressed = Resources.loadGraphicalImage("pause_button_pressed.png");
+        BufferedImage pausedUnpressed = Resources.loadGraphicalImage("pause_button_unpressed.png");
+        BufferedImage pausedHighlighted = Resources.loadGraphicalImage("pause_button_highlighted.png");
+        pauseButton = new Button(pausedPressed, pausedUnpressed, pausedHighlighted, 820, 8);
         
         // Not the best place for this but it's the only place that works atm.
         timer = new Timer(1 * 60 * 1000);
@@ -356,6 +362,9 @@ public class GridScreen extends Screen {
 
         // ***** Render timer ***** //
         g.drawString(String.format("%.0f", Math.ceil(timer.getTimeLeftMillis() / 1000.0)), 10, 50);
+
+        // ***** Render buttons ***** //
+        pauseButton.render(g);
     }
 
     private boolean isStable() {

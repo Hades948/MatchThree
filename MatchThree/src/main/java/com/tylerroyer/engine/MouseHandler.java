@@ -3,6 +3,7 @@ package com.tylerroyer.engine;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.MouseInfo;
+import java.awt.Point;
 
 /**
  * Helper class for mouse input.
@@ -28,6 +29,10 @@ public class MouseHandler implements MouseListener {
         int absoluteY = (int) MouseInfo.getPointerInfo().getLocation().getY();
         int windowY = Game.getWindow().getY() + 31;
         return absoluteY - windowY;
+    }
+
+    public Point getPoint() {
+        return new Point(getX(), getY());
     }
 
     /**
