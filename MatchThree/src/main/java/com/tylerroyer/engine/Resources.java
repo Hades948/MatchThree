@@ -37,6 +37,14 @@ public class Resources {
         return getGraphicalResource(name);
     }
 
+    static BufferedImage loadEngineGraphicalImage(String name) {
+        try {
+            graphical.put(name, ImageIO.read(Resources.class.getResourceAsStream(name)));
+        } catch (IOException e) {e.printStackTrace();}
+
+        return getGraphicalResource(name);
+    }
+
     /**
      * @param name The name of the image file.
      * @return A pointer to the loaded image with the given name.

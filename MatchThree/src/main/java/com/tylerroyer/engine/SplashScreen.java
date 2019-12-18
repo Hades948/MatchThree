@@ -1,6 +1,6 @@
 package com.tylerroyer.engine;
 
-import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.awt.Graphics2D;
 
 /**
@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 class SplashScreen extends Screen {
     private int counter = 0;
     private Screen firstScreen;
+    private BufferedImage splash;
 
     /**
      * @param firstScreen The screen to switch to after the splash screen has finished.
@@ -19,6 +20,7 @@ class SplashScreen extends Screen {
 
     @Override
     public void loadResources() {
+        splash = Resources.loadEngineGraphicalImage("engine_splash.png");
     }
 
     @Override
@@ -32,7 +34,6 @@ class SplashScreen extends Screen {
 
     @Override
     public void render(Graphics2D g) {
-        g.setColor(Color.WHITE);
-        g.drawString("Splash Screen Template", 380, 300);
+        g.drawImage(splash, 0, 0, Game.getWindow());
     }
 }
