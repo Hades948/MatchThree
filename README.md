@@ -18,9 +18,9 @@ rate or at a lower resolution.  If you have a different display, feel free to
 Thanks again!
 
 ## Changes
-**0.1**
-* Initial alpha build.   
-   
 **0.2**
 * Added timer.
-* Added pausing functionality.
+* Added pausing functionality.   
+   
+**0.1**
+* Initial alpha build.
