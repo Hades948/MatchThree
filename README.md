@@ -16,3 +16,11 @@ rate or at a lower resolution.  If you have a different display, feel free to
 [email me](mailto:tyler.wayne.royer@gmail.com) and let me know how it works!   
    
 Thanks again!
+
+## Changes
+**0.1**
+* Initial alpha build.   
+   
+**0.2**
+* Added timer.
+* Added pausing functionality.
