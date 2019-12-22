@@ -52,7 +52,8 @@ public class GridScreen extends Screen {
     private BufferedImage redCrystalParticle, blueCrystalParticle, purpleCrystalParticle, greenCrystalParticle;
 
     private Timer timer;
-    private Button pauseButton;
+    private Button pauseButton, resumeButton;
+    private boolean paused;
 
     public void loadResources() {
         ambientBackground = Resources.loadGraphicalImage("ambient_background_1.png");
@@ -70,6 +71,11 @@ public class GridScreen extends Screen {
         BufferedImage pausedUnpressed = Resources.loadGraphicalImage("pause_button_unpressed.png");
         BufferedImage pausedHighlighted = Resources.loadGraphicalImage("pause_button_highlighted.png");
         pauseButton = new Button(pausedPressed, pausedUnpressed, pausedHighlighted, 820, 8);
+
+        BufferedImage resumePressed = Resources.loadGraphicalImage("resume_button_pressed.png");
+        BufferedImage resumeUnpressed = Resources.loadGraphicalImage("resume_button_unpressed.png");
+        BufferedImage resumeHighlighted = Resources.loadGraphicalImage("resume_button_highlighted.png");
+        resumeButton = new Button(resumePressed, resumeUnpressed, resumeHighlighted, 334, 400);
         
         // Not the best place for this but it's the only place that works atm.
         timer = new Timer(1 * 60 * 1000);
@@ -96,6 +102,7 @@ public class GridScreen extends Screen {
         while(!isStable()) shuffle();
 
         currentMode = Mode.SELECTION;
+        paused = false;
     }
 
     @Override
@@ -103,6 +110,16 @@ public class GridScreen extends Screen {
         if (gameOver) return;
 
         timer.update();
+
+        if (paused)  {
+            if (resumeButton.isDown()) {
+                paused = false;
+                timer.start();
+            } else return;
+        } else if (pauseButton.isDown()) {
+            paused = true;
+            timer.pause();
+        }
 
         // ***** Update grid ***** //
         for (ArrayList<Tile> row : grid) {
@@ -308,63 +325,77 @@ public class GridScreen extends Screen {
     public void render(Graphics2D g) {
         // ***** Render background ***** //
         g.drawImage(ambientBackground, 0, 0, Game.getWindow());
-        g.drawImage(gridBackground, 0, 0, Game.getWindow());
 
-        // ***** Render grid ***** //
-        // Render the grid.
-        for (int rowIndex = 0; rowIndex < grid.size(); rowIndex++) {
-            ArrayList<Tile> row = grid.get(rowIndex);
-            for (int columnIndex = 0; columnIndex < row.size(); columnIndex++) {
-                Tile tile = row.get(columnIndex);
-                if (tile != null) {
-                    int x = PADDING + columnIndex * (SQUARE_SIZE + PADDING) + tile.getOffsetX() + GRID_OFFSET_X;
-                    int y = PADDING + rowIndex * (SQUARE_SIZE + PADDING) + tile.getOffsetY() + GRID_OFFSET_Y;
-                    if (tile.getColor() == Tile.RED) {
-                        g.drawImage(redCrystal, x, y, Game.getWindow());
-                    } else if (tile.getColor() == Tile.BLUE) {
-                        g.drawImage(blueCrystal, x, y, Game.getWindow());
-                    } else if (tile.getColor() == Tile.PURPLE) {
-                        g.drawImage(purpleCrystal, x, y, Game.getWindow());
-                    } else if (tile.getColor() == Tile.GREEN) {
-                        g.drawImage(greenCrystal, x, y, Game.getWindow());
+        if (paused) {
+            // Paused text
+            g.setFont(new Font("Arial", Font.PLAIN, 48));
+            g.setColor(Color.BLACK);
+            g.drawString("PAUSED", 343, 373);
+            g.setColor(Color.WHITE);
+            g.drawString("PAUSED", 340, 370);
+
+            // Resume button
+            resumeButton.render(g);
+        } else {
+            // ***** Render grid ***** //
+            // Grid background
+            g.drawImage(gridBackground, 0, 0, Game.getWindow());
+            
+            // Render the grid.
+            for (int rowIndex = 0; rowIndex < grid.size(); rowIndex++) {
+                ArrayList<Tile> row = grid.get(rowIndex);
+                for (int columnIndex = 0; columnIndex < row.size(); columnIndex++) {
+                    Tile tile = row.get(columnIndex);
+                    if (tile != null) {
+                        int x = PADDING + columnIndex * (SQUARE_SIZE + PADDING) + tile.getOffsetX() + GRID_OFFSET_X;
+                        int y = PADDING + rowIndex * (SQUARE_SIZE + PADDING) + tile.getOffsetY() + GRID_OFFSET_Y;
+                        if (tile.getColor() == Tile.RED) {
+                            g.drawImage(redCrystal, x, y, Game.getWindow());
+                        } else if (tile.getColor() == Tile.BLUE) {
+                            g.drawImage(blueCrystal, x, y, Game.getWindow());
+                        } else if (tile.getColor() == Tile.PURPLE) {
+                            g.drawImage(purpleCrystal, x, y, Game.getWindow());
+                        } else if (tile.getColor() == Tile.GREEN) {
+                            g.drawImage(greenCrystal, x, y, Game.getWindow());
+                        }
                     }
                 }
             }
+
+            // Render the highlighter
+            g.setColor(new Color(255, 255, 255, 50));
+            Point gridPoint = getGridPoint(Game.getMouseHandler().getX() - GRID_OFFSET_X, Game.getMouseHandler().getY() - GRID_OFFSET_Y);
+            int highlighterX = (int) gridPoint.getX() * (SQUARE_SIZE + PADDING) + PADDING / 2 + GRID_OFFSET_X;
+            int highlighterY = (int) gridPoint.getY() * (SQUARE_SIZE + PADDING) + PADDING / 2 + GRID_OFFSET_Y;
+            g.fillRect(highlighterX, highlighterY, SQUARE_SIZE + PADDING, SQUARE_SIZE + PADDING);
+
+            // Render the selector
+            if (currentMode == Mode.SELECTION && firstSelectedPoint != null) {
+                g.setColor(new Color(255, 255, 255));
+                int selectorX = (int) firstSelectedPoint.getX() * (SQUARE_SIZE + PADDING) + PADDING / 2 + GRID_OFFSET_X;
+                int selectorY = (int) firstSelectedPoint.getY() * (SQUARE_SIZE + PADDING) + PADDING / 2 + GRID_OFFSET_Y;
+                g.drawRect(selectorX, selectorY, SQUARE_SIZE + PADDING, SQUARE_SIZE + PADDING);
+            }
+
+            // ***** Render overlay ***** //
+            g.setColor(new Color(200, 200, 255));
+            g.setFont(new Font("Arial", Font.PLAIN, 48)); 
+            NumberFormat format = NumberFormat.getInstance();
+            format.setGroupingUsed(true);
+            g.drawString("Crystals: " + format.format(crystals), 90, 110);
+            g.drawString("Combo: x" + combo, 550, 110);
+
+            // ***** Render emitters ***** //
+            for (ParticleEmitter emitter : particleEmitters) {
+                emitter.render(g);
+            }
+
+            // ***** Render timer ***** //
+            g.drawString(String.format("%.0f", Math.ceil(timer.getTimeLeftMillis() / 1000.0)), 10, 50);
+            
+            // ***** Render buttons ***** //
+            pauseButton.render(g);
         }
-
-        // Render the highlighter
-        g.setColor(new Color(255, 255, 255, 50));
-        Point gridPoint = getGridPoint(Game.getMouseHandler().getX() - GRID_OFFSET_X, Game.getMouseHandler().getY() - GRID_OFFSET_Y);
-        int highlighterX = (int) gridPoint.getX() * (SQUARE_SIZE + PADDING) + PADDING / 2 + GRID_OFFSET_X;
-        int highlighterY = (int) gridPoint.getY() * (SQUARE_SIZE + PADDING) + PADDING / 2 + GRID_OFFSET_Y;
-        g.fillRect(highlighterX, highlighterY, SQUARE_SIZE + PADDING, SQUARE_SIZE + PADDING);
-
-        // Render the selector
-        if (currentMode == Mode.SELECTION && firstSelectedPoint != null) {
-            g.setColor(new Color(255, 255, 255));
-            int selectorX = (int) firstSelectedPoint.getX() * (SQUARE_SIZE + PADDING) + PADDING / 2 + GRID_OFFSET_X;
-            int selectorY = (int) firstSelectedPoint.getY() * (SQUARE_SIZE + PADDING) + PADDING / 2 + GRID_OFFSET_Y;
-            g.drawRect(selectorX, selectorY, SQUARE_SIZE + PADDING, SQUARE_SIZE + PADDING);
-        }
-
-        // ***** Render overlay ***** //
-        g.setColor(new Color(200, 200, 255));
-        g.setFont(new Font("Arial", Font.PLAIN, 48)); 
-        NumberFormat format = NumberFormat.getInstance();
-        format.setGroupingUsed(true);
-        g.drawString("Crystals: " + format.format(crystals), 90, 110);
-        g.drawString("Combo: x" + combo, 550, 110);
-
-        // ***** Render emitters ***** //
-        for (ParticleEmitter emitter : particleEmitters) {
-            emitter.render(g);
-        }
-
-        // ***** Render timer ***** //
-        g.drawString(String.format("%.0f", Math.ceil(timer.getTimeLeftMillis() / 1000.0)), 10, 50);
-
-        // ***** Render buttons ***** //
-        pauseButton.render(g);
     }
 
     private boolean isStable() {

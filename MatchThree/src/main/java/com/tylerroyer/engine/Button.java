@@ -21,12 +21,12 @@ public class Button {
         return pressed.getRaster().getBounds().contains(mouseOffset);
     }
 
-    public boolean isPressed() {
+    public boolean isDown() {
         return isMouseHovering() && Game.getMouseHandler().isDown();
     }
 
     public void render(Graphics2D g) {
-        if (isPressed())
+        if (isDown())
             g.drawImage(pressed, x, y, Game.getWindow());
         else if (isMouseHovering())
             g.drawImage(highlighted, x, y, Game.getWindow());
