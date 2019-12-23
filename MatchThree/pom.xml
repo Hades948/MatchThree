@@ -25,6 +25,13 @@
       <version>4.11</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.tylerroyer.molasses</groupId>
+      <artifactId>MolassesEngine</artifactId>
+      <version>0.1.1</version>
+      <scope>system</scope>
+      <systemPath>${basedir}\src\lib\MolassesEngine-0.1.1.jar</systemPath>
+    </dependency>
   </dependencies>
 
   <build>

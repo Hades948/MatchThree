@@ -1,7 +1,7 @@
 package com.tylerroyer.matchthree;
 
-import com.tylerroyer.engine.*;
-import com.tylerroyer.engine.particles.*;
+import com.tylerroyer.molasses.*;
+import com.tylerroyer.molasses.particles.*;
 
 import java.awt.Color;
 import java.awt.Font;

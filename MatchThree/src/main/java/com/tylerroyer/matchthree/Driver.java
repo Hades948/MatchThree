@@ -1,6 +1,6 @@
 package com.tylerroyer.matchthree;
 
-import com.tylerroyer.engine.*;
+import com.tylerroyer.molasses.*;
 
 public class Driver {
     public static void main( String[] args ) {
