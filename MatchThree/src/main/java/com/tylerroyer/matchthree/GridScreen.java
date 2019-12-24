@@ -5,7 +5,6 @@ import com.tylerroyer.molasses.particles.*;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.Point;
 import java.text.NumberFormat;
@@ -322,7 +321,7 @@ public class GridScreen extends Screen {
     }
 
     @Override
-    public void render(Graphics2D g) {
+    public void render(GameGraphics g) {
         // ***** Render background ***** //
         g.drawImage(ambientBackground, 0, 0, Game.getWindow());
 

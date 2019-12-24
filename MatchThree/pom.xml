@@ -28,9 +28,9 @@
     <dependency>
       <groupId>com.tylerroyer.molasses</groupId>
       <artifactId>MolassesEngine</artifactId>
-      <version>0.1.1</version>
+      <version>0.1.2</version>
       <scope>system</scope>
-      <systemPath>${basedir}\src\lib\MolassesEngine-0.1.1.jar</systemPath>
+      <systemPath>${basedir}\src\lib\MolassesEngine-0.1.2.jar</systemPath>
     </dependency>
   </dependencies>
 
