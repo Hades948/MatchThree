@@ -1,2 +1,7 @@
+com\tylerroyer\matchthree\GridScreen.class
+com\tylerroyer\matchthree\GridScreen$Mode.class
+com\tylerroyer\matchthree\Tile$Direction.class
+com\tylerroyer\matchthree\Tile.class
 com\tylerroyer\matchthree\GridScreen$1.class
 com\tylerroyer\matchthree\Tile$1.class
+com\tylerroyer\matchthree\Driver.class
