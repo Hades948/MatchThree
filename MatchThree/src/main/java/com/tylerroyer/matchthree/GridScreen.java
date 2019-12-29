@@ -70,11 +70,13 @@ public class GridScreen extends Screen {
         BufferedImage pausedUnpressed = Resources.loadGraphicalImage("pause_button_unpressed.png");
         BufferedImage pausedHighlighted = Resources.loadGraphicalImage("pause_button_highlighted.png");
         pauseButton = new Button(pausedPressed, pausedUnpressed, pausedHighlighted, 820, 8);
+        this.addButton(pauseButton);
 
         BufferedImage resumePressed = Resources.loadGraphicalImage("resume_button_pressed.png");
         BufferedImage resumeUnpressed = Resources.loadGraphicalImage("resume_button_unpressed.png");
         BufferedImage resumeHighlighted = Resources.loadGraphicalImage("resume_button_highlighted.png");
         resumeButton = new Button(resumePressed, resumeUnpressed, resumeHighlighted, 334, 400);
+        this.addButton(resumeButton);
         
         // Not the best place for this but it's the only place that works atm.
         timer = new Timer(1 * 60 * 1000);
@@ -110,15 +112,7 @@ public class GridScreen extends Screen {
 
         timer.update();
 
-        if (paused)  {
-            if (resumeButton.isDown()) {
-                paused = false;
-                timer.start();
-            } else return;
-        } else if (pauseButton.isDown()) {
-            paused = true;
-            timer.pause();
-        }
+        if (paused) return;
 
         // ***** Update grid ***** //
         for (ArrayList<Tile> row : grid) {
@@ -483,5 +477,18 @@ public class GridScreen extends Screen {
         int y = gridY * (SQUARE_SIZE + PADDING) + PADDING + GRID_OFFSET_Y;
 
         return new Point(x, y);
+    }
+
+    @Override
+    public void onButtonClick(Button button) {
+        if (paused)  {
+            if (button == resumeButton) {
+                paused = false;
+                timer.start();
+            }
+        } else if (button == pauseButton) {
+            paused = true;
+            timer.pause();
+        }
     }
 }
